@@ -17,7 +17,7 @@ class SignalProcessingPipeline(
     private val bufferManager = BufferWindowManager(windowDurationMs, windowStepMs)
     private val aggregator = FeatureAggregator()
 
-    private val _windowStream = MutableSharedFlow<ProcessedWindowData>(extraBufferCapacity = 10)
+    private val _windowStream = MutableSharedFlow<ProcessedWindowData>(replay = 1, extraBufferCapacity = 10)
     val windowStream: Flow<ProcessedWindowData> = _windowStream.asSharedFlow()
 
     suspend fun processSample(sample: SensorSample) {
