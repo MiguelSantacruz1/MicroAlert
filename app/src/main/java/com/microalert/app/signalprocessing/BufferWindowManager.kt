@@ -9,7 +9,8 @@ import java.util.ArrayDeque
  */
 class BufferWindowManager(
     val windowDurationMs: Long = 60_000L,
-    val windowStepMs: Long = 30_000L
+    val windowStepMs: Long = 30_000L,
+    val emitOnFirstSample: Boolean = false
 ) {
     private val samplesBuffer = ArrayDeque<SensorSample>()
     private var lastEmittedTimestampMs: Long = 0L
@@ -23,8 +24,14 @@ class BufferWindowManager(
             samplesBuffer.removeFirst()
         }
 
+        // Inicializar timestamp base en la primera muestra
+        if (lastEmittedTimestampMs == 0L) {
+            lastEmittedTimestampMs = sample.timestampMs
+            return if (emitOnFirstSample) samplesBuffer.toList() else null
+        }
+
         // Verificar si ha transcurrido el tiempo de paso desde la última emisión
-        if (lastEmittedTimestampMs == 0L || (sample.timestampMs - lastEmittedTimestampMs) >= windowStepMs) {
+        if ((sample.timestampMs - lastEmittedTimestampMs) >= windowStepMs) {
             lastEmittedTimestampMs = sample.timestampMs
             return samplesBuffer.toList()
         }
