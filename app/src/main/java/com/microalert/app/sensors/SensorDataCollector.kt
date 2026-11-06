@@ -44,6 +44,7 @@ class SensorDataCollector(context: Context) : SensorDataSource {
                     val rawSample = SensorSample(
                         timestampMs = System.currentTimeMillis(),
                         heartRateBpm = bpm,
+                        rIntervalsMs = hrvExtractor.extractRIntervalsMs(),
                         accelX = accel.x,
                         accelY = accel.y,
                         accelZ = accel.z,
