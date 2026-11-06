@@ -47,9 +47,11 @@ MICROALERT se basa en una arquitectura **Clean Architecture + MVVM (Model-View-V
 - **Equivalencia Matemática:** Validación estricta con tolerancia $< 10^{-6}$ contra las probabilidades de referencia de `scikit-learn` registradas en `test_vectors.json`.
 
 ### `domain`
-- **Modelos de Negocio:** `RiskLevel` (4 niveles), `RiskClassificationConfig` (umbrales configurables), `WindowDataQuality` (transparencia de señales) y `RiskAssessmentResult`.
+- **Modelos de Negocio:** `RiskLevel` (4 niveles), `RiskClassificationConfig` (umbrales configurables), `WindowDataQuality` (transparencia de señales), `RiskAssessmentResult`, `AlertEvent` y `AlertPolicyConfig`.
 - **Política de Clasificación:** `RiskPolicyManager` implementa el mapeo de probabilidades con filtro de persistencia temporal ($N$ ventanas consecutivas para elevar a `HIGH`/`CRITICAL`) e histéresis anti-rebote para evitar oscilaciones rápidas entre niveles adyacentes al descender de riesgo.
+- **Gestión de Alertas y Háptica:** `AlertManager` controla el ciclo de vida de alertas activas, tiempos de enfriamiento (*cooldown* configurable por nivel de riesgo para evitar fatiga sensorial del usuario) y orquesta la retroalimentación de vibración háptica mediante `HapticFeedbackManager`.
 - **Casos de Uso:**
+  - `ManageAlertsUseCase`: Gestión y reconocimiento de alertas por el usuario.
   - `EvaluateRiskUseCase`: Orquesta la extracción de calidad de señales, la inferencia local del modelo y la política de riesgo.
   - `PredictDrowsinessProbabilityUseCase`: Invoca al evaluador del ensamble ML.
   - `ExtractFeatureVectorUseCase`: Ensambla el vector de 8 variables en orden estricto.
