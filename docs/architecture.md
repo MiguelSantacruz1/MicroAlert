@@ -4,7 +4,7 @@
 
 MICROALERT se basa en una arquitectura **Clean Architecture + MVVM (Model-View-ViewModel)** adaptada para Wear OS. La aplicación garantiza un desacoplamiento estricto entre el hardware de los sensores, el procesamiento de señales, el modelo de clasificación Machine Learning y la capa de presentación Compose.
 
-```
+```text
 [ Sensores (Hardware / SensorManager) ]
                 │
                 ▼
@@ -32,8 +32,12 @@ MICROALERT se basa en una arquitectura **Clean Architecture + MVVM (Model-View-V
 - Proporciona flujos asíncronos (`Flow<SensorSample>`) para Acelerómetro, Giroscopio y Frecuencia Cardíaca (BPM / RR-IBI).
 
 ### `signalprocessing`
-- Procesa las señales crudas mediante ventanas temporales deslizantes (60 segundos con solape/paso de 30 segundos).
-- Aplica filtros de ruido y calcula agregados (magnitud de aceleración, magnitud angular, variabilidad HRV SDNN/RMSSD).
+- **Gestión de Ventanas Temporales:** Implementa `BufferWindowManager` para ventanas deslizantes de 60 segundos con paso/solape de 30 segundos (50% overlap).
+- **Algoritmos HRV:** `HrvCalculator` evalúa $SDNN$ y $RMSSD$ únicamente cuando existen intervalos $RR/IBI$ válidos:
+  - $SDNN = \sqrt{\frac{1}{N-1}\sum_{i=1}^N (RR_i - \overline{RR})^2}$
+  - $RMSSD = \sqrt{\frac{1}{N-1}\sum_{i=1}^{N-1} (RR_{i+1} - RR_i)^2}$
+- **Filtro y Detección de Inactividad:** `InactivityDetector` contabiliza tiempo continuo sin variación significativa de gravedad ($< 0.35 m/s^2$).
+- **Agregación de Características:** `FeatureAggregator` calcula medias y consolidaciones dentro de cada ventana sin mezclar datos entre ventanas distintas.
 
 ### `ml`
 - Implementa la carga del modelo Random Forest desde formato JSON.
