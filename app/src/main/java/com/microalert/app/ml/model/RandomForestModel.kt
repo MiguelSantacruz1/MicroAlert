@@ -27,7 +27,16 @@ data class RandomForestModel(
     @SerializedName("trees")
     val rawTrees: List<List<DecisionTreeNode>>
 ) {
-    val decisionTrees: List<DecisionTree> by lazy {
-        rawTrees.map { DecisionTree(it) }
-    }
+    @Transient
+    private var cachedTrees: List<DecisionTree>? = null
+
+    val decisionTrees: List<DecisionTree>
+        get() {
+            var trees = cachedTrees
+            if (trees == null) {
+                trees = rawTrees.map { DecisionTree(it) }
+                cachedTrees = trees
+            }
+            return trees
+        }
 }
