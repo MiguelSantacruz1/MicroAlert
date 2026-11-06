@@ -2,9 +2,8 @@ package com.microalert.app.presentation.monitoring
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.microalert.app.data.repository.SensorRepository
+import com.microalert.app.data.repository.SensorRepositoryImpl
 import com.microalert.app.domain.model.AppMode
-import com.microalert.app.domain.model.RiskLevel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,10 +11,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 /**
- * ViewModel para controlar el monitoreo y recolectar las muestras en vivo de sensores.
+ * ViewModel para controlar el monitoreo y recolectar las muestras en vivo y ventanas procesadas.
  */
 class MonitoringViewModel(
-    private val sensorRepository: SensorRepository? = null
+    private val sensorRepository: SensorRepositoryImpl? = null
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MonitoringUiState())
@@ -30,6 +29,20 @@ class MonitoringViewModel(
                             heartRateBpm = sample.heartRateBpm ?: current.heartRateBpm,
                             accelerometerMagnitude = sample.accelMagnitude,
                             gyroscopeMagnitude = sample.gyroMagnitude
+                        )
+                    }
+                }
+            }
+
+            viewModelScope.launch {
+                repo.getProcessedWindowStream().collect { window ->
+                    _uiState.update { current ->
+                        current.copy(
+                            inactivityDurationSeconds = window.inactivitySeconds,
+                            hrvSdnnMs = window.hrvSdnnMs,
+                            hrvRmssdMs = window.hrvRmssdMs,
+                            hrvAvailable = window.isHrvAvailable,
+                            windowCountProcessed = current.windowCountProcessed + 1
                         )
                     }
                 }
