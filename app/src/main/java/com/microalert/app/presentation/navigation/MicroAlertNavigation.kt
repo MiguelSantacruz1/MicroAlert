@@ -15,6 +15,8 @@ import com.microalert.app.presentation.home.HomeScreen
 import com.microalert.app.presentation.home.HomeViewModel
 import com.microalert.app.presentation.monitoring.MonitoringScreen
 import com.microalert.app.presentation.monitoring.MonitoringViewModel
+import com.microalert.app.presentation.reaction.ReactionTestScreen
+import com.microalert.app.presentation.reaction.ReactionTestViewModel
 import com.microalert.app.presentation.sensorstatus.SensorStatusScreen
 import com.microalert.app.presentation.sensorstatus.SensorStatusUiState
 import com.microalert.app.presentation.settings.SettingsScreen
@@ -27,19 +29,22 @@ object Screen {
     const val SENSOR_STATUS = "sensor_status"
     const val HISTORY = "history"
     const val SETTINGS = "settings"
+    const val REACTION_TEST = "reaction_test"
 }
 
 /**
- * Grafo de Navegación completo para Wear OS con soporte para ademanes de deslizamiento (Swipe Dismiss).
+ * Grafo de Navegación completo para Wear OS.
  */
 @Composable
 fun MicroAlertNavHost(
     homeViewModel: HomeViewModel = viewModel(),
-    monitoringViewModel: MonitoringViewModel = viewModel()
+    monitoringViewModel: MonitoringViewModel = viewModel(),
+    reactionTestViewModel: ReactionTestViewModel = viewModel()
 ) {
     val navController = rememberSwipeDismissableNavController()
     val homeUiState by homeViewModel.uiState.collectAsState()
     val monitoringUiState by monitoringViewModel.uiState.collectAsState()
+    val reactionTestUiState by reactionTestViewModel.uiState.collectAsState()
 
     SwipeDismissableNavHost(
         navController = navController,
@@ -92,7 +97,19 @@ fun MicroAlertNavHost(
                 uiState = SettingsUiState(),
                 onToggleAppMode = { homeViewModel.toggleAppMode() },
                 onToggleVibration = {},
-                onToggleReactionTest = {}
+                onToggleReactionTest = { navController.navigate(Screen.REACTION_TEST) }
+            )
+        }
+
+        composable(Screen.REACTION_TEST) {
+            ReactionTestScreen(
+                uiState = reactionTestUiState,
+                onStartTest = { reactionTestViewModel.startTestSequence() },
+                onUserTap = { reactionTestViewModel.onUserReaction() },
+                onFinish = {
+                    reactionTestViewModel.reset()
+                    navController.popBackStack()
+                }
             )
         }
     }
