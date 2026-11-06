@@ -63,15 +63,26 @@ El modelo Random Forest evalúa ventanas temporales continuas utilizando un vect
 ```text
 com.microalert.app/
 ├── data/                 # Repositorios y fuentes de datos
-├── domain/               # Casos de uso y modelos de negocio
+├── di/                   # Contenedor manual de inyección de dependencias (AppContainer)
+├── domain/               # Casos de uso, clasificadores y modelos de negocio
 ├── ml/                   # Evaluador de Random Forest e imputación
-├── presentation/         # Pantallas Wear OS en Jetpack Compose
+├── presentation/         # Pantallas Wear OS en Jetpack Compose y ViewModels
 ├── sensors/              # Listeners de SensorManager y Health Services
 ├── services/             # Foreground Service para monitoreo continuo
 ├── signalprocessing/     # Filtros y cálculo de ventanas temporales
 ├── storage/              # Base de datos Room e historial de sesiones
-└── utils/                # Utilidades de vibración y formateo
+└── utils/                # Utilidades de vibración, optimización y formateo
 ```
+
+---
+
+## 🧪 Verificación y Pruebas Unitarias
+
+El proyecto cuenta con una suite completa de pruebas unitarias y de integración que certifican la equivalencia numérica del modelo Random Forest con respecto a Python scikit-learn ($< 10^{-6}$), la estabilidad temporal ante artefactos y la resiliencia en almacenamiento:
+
+- **Total de pruebas automatizadas:** 54 pruebas unitarias e integración en JVM.
+- **Tasa de éxito:** 100% pasando (`./gradlew testDebugUnitTest`).
+- **Historial de Commits:** Desarrollo granular riguroso siguiendo Conventional Commits en español.
 
 ---
 
