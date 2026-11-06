@@ -35,11 +35,27 @@ class ReactionTestViewModel(
             delay(randomDelay)
             stimulusStartTimeMs = System.currentTimeMillis()
             _uiState.update { it.copy(phase = ReactionTestPhase.STIMULUS_ACTIVE, message = "¡PRESIONE AHORA!") }
+
+            // Límite de tiempo máximo para responder (timeout de 5 segundos)
+            delay(5000L)
+            if (_uiState.value.phase == ReactionTestPhase.STIMULUS_ACTIVE) {
+                reactionTestManager?.recordResult(
+                    ReactionTestResult(latencyMs = null, isSuccessful = false, isTimedOut = true)
+                )
+                _uiState.update {
+                    it.copy(
+                        phase = ReactionTestPhase.COMPLETED,
+                        lastLatencyMs = null,
+                        message = "Tiempo agotado sin respuesta."
+                    )
+                }
+            }
         }
     }
 
     fun onUserReaction() {
         if (_uiState.value.phase == ReactionTestPhase.STIMULUS_ACTIVE) {
+            testJob?.cancel()
             val latency = System.currentTimeMillis() - stimulusStartTimeMs
             reactionTestManager?.recordResult(
                 ReactionTestResult(latencyMs = latency, isSuccessful = true, isTimedOut = false)
