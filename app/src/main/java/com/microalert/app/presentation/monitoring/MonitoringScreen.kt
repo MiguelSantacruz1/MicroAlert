@@ -81,5 +81,14 @@ fun MonitoringScreen(
                 onClick = {}
             )
         }
+
+        item {
+            StatusChip(
+                label = "Sesión Activa",
+                statusText = "Detener Monitoreo",
+                statusColor = MaterialTheme.colorScheme.error,
+                onClick = onStopMonitoringClick
+            )
+        }
     }
 }
