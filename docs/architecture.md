@@ -40,9 +40,11 @@ MICROALERT se basa en una arquitectura **Clean Architecture + MVVM (Model-View-V
 - **Agregación de Características:** `FeatureAggregator` calcula medias y consolidaciones dentro de cada ventana sin mezclar datos entre ventanas distintas.
 
 ### `ml`
-- Implementa la carga del modelo Random Forest desde formato JSON.
-- Ejecuta la inferencia nativa en Kotlin sin dependencias de frameworks externos pesados.
-- Realiza la imputación de valores faltantes basada en las medianas guardadas en los metadatos del modelo.
+- **Carga de Modelo:** `AssetModelLoader` deserializa `model.json` y `metadata.json` desde assets empaquetados en la aplicación o desde flujos de entrada en pruebas.
+- **Modelos de Ensamble:** `RandomForestModel`, `DecisionTree` y `DecisionTreeNode` representan los árboles y nodos con mapeo eficiente por `nodeId`.
+- **Inferencia Nativa Iterativa:** `RandomForestEvaluator` y `DecisionTreeEvaluator` ejecutan el descenso en cada árbol mediante un bucle iterativo sin recursión, eliminando el riesgo de desbordamiento de pila en Wear OS y promediando las probabilidades $P \in [0, 1]$.
+- **Estrategia de Imputación:** `ImputationStrategy` sustituye variables no disponibles (HRV, Reacción, BPM) por las medianas calculadas en el entrenamiento.
+- **Equivalencia Matemática:** Validación estricta con tolerancia $< 10^{-6}$ contra las probabilidades de referencia de `scikit-learn` registradas en `test_vectors.json`.
 
 ### `domain`
 - Contiene los casos de uso (`StartMonitoringUseCase`, `EvaluateDrowsinessUseCase`, `ManageAlertsUseCase`).
