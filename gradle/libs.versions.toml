@@ -13,6 +13,8 @@ room = "2.6.1"
 coroutines = "1.9.0"
 gson = "2.11.0"
 healthServices = "1.0.0-rc02"
+guava = "33.3.1-android"
+concurrentFutures = "1.2.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
@@ -38,9 +40,12 @@ androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = 
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 
 androidx-health-services-client = { group = "androidx.health", name = "health-services-client", version.ref = "healthServices" }
+guava = { group = "com.google.guava", name = "guava", version.ref = "guava" }
+androidx-concurrent-futures-ktx = { group = "androidx.concurrent", name = "concurrent-futures-ktx", version.ref = "concurrentFutures" }
 
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 
 junit = { group = "junit", name = "junit", version.ref = "junit" }

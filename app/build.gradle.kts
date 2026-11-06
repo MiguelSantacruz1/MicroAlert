@@ -65,12 +65,15 @@ dependencies {
     ksp(libs.androidx.room.compiler)
 
     implementation(libs.androidx.health.services.client)
+    implementation(libs.guava)
+    implementation(libs.androidx.concurrent.futures.ktx)
 
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.gson)
 
     testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
