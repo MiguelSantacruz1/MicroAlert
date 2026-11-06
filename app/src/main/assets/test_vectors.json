@@ -1,0 +1,129 @@
+{
+  "version": "1.0.0",
+  "description": "Vectores de prueba de referencia para equivalencia Python-Kotlin",
+  "tolerance": 1e-06,
+  "feature_order": [
+    "heartRate",
+    "accelerometerMagnitude",
+    "gyroscopeMagnitude",
+    "inactivityDurationSeconds",
+    "reactionTimeMs",
+    "sessionDurationSeconds",
+    "hrvSdnnMs",
+    "hrvRmssdMs"
+  ],
+  "test_cases": [
+    {
+      "id": "vec_01_clear_alert",
+      "description": "Patr\u00f3n claro de alerta: HR alto, movimiento continuo, reacci\u00f3n r\u00e1pida, baja inactividad",
+      "features": [
+        82.0,
+        10.2,
+        0.25,
+        5.0,
+        260.0,
+        120.0,
+        36.0,
+        32.0
+      ],
+      "expected_probability": 3e-05,
+      "expected_drowsy_prediction": 0
+    },
+    {
+      "id": "vec_02_clear_drowsy",
+      "description": "Patr\u00f3n claro de somnolencia: HR bajo, alta inactividad, reacci\u00f3n lenta, sesi\u00f3n avanzada",
+      "features": [
+        58.0,
+        9.81,
+        0.01,
+        52.0,
+        680.0,
+        1500.0,
+        75.0,
+        68.0
+      ],
+      "expected_probability": 0.998981,
+      "expected_drowsy_prediction": 1
+    },
+    {
+      "id": "vec_03_borderline_precaution",
+      "description": "Patr\u00f3n intermedio / umbral de precauci\u00f3n: par\u00e1metros en zona de transici\u00f3n",
+      "features": [
+        66.0,
+        9.85,
+        0.04,
+        25.0,
+        380.0,
+        600.0,
+        48.0,
+        44.0
+      ],
+      "expected_probability": 0.039326,
+      "expected_drowsy_prediction": 0
+    },
+    {
+      "id": "vec_04_missing_hrv_imputed",
+      "description": "HRV no disponible (SDNN y RMSSD imputados con medianas)",
+      "features": [
+        74.0,
+        9.9,
+        0.08,
+        12.0,
+        310.0,
+        300.0,
+        49.46,
+        44.6
+      ],
+      "expected_probability": 0.000805,
+      "expected_drowsy_prediction": 0
+    },
+    {
+      "id": "vec_05_missing_reaction_imputed",
+      "description": "Tiempo de reacci\u00f3n no disponible (imputado con mediana)",
+      "features": [
+        62.0,
+        9.82,
+        0.02,
+        45.0,
+        357.55,
+        900.0,
+        65.0,
+        58.0
+      ],
+      "expected_probability": 0.996138,
+      "expected_drowsy_prediction": 1
+    },
+    {
+      "id": "vec_06_high_inactivity_drowsy",
+      "description": "Inactividad extrema sostenida con descenso card\u00edaco",
+      "features": [
+        56.0,
+        9.81,
+        0.008,
+        58.0,
+        720.0,
+        1800.0,
+        80.0,
+        72.0
+      ],
+      "expected_probability": 0.998981,
+      "expected_drowsy_prediction": 1
+    },
+    {
+      "id": "vec_07_all_medians_baseline",
+      "description": "Vector correspondiente exactamente a las medianas base",
+      "features": [
+        70.445,
+        9.8065,
+        0.0355,
+        17.8,
+        357.55,
+        915.0,
+        49.46,
+        44.6
+      ],
+      "expected_probability": 0.043962,
+      "expected_drowsy_prediction": 0
+    }
+  ]
+}
