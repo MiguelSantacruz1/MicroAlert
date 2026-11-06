@@ -16,10 +16,10 @@ class ImputationStrategyTest {
             accelerometerMagnitude = 9.81f,
             gyroscopeMagnitude = 0.05f,
             inactivityDurationSeconds = 12.0f,
-            reactionTimeMs = null, // Debería imputar 350.0
+            reactionTimeMs = null, // Debería imputar 357.55
             sessionDurationSeconds = 400.0f,
-            hrvSdnnMs = null, // Debería imputar 45.0
-            hrvRmssdMs = null // Debería imputar 40.0
+            hrvSdnnMs = null, // Debería imputar 49.46
+            hrvRmssdMs = null // Debería imputar 44.60
         )
 
         val imputed = strategy.imputeVector(rawVector)
@@ -29,16 +29,16 @@ class ImputationStrategyTest {
         assertEquals(9.81f, imputed[1], 1e-4f)
         assertEquals(0.05f, imputed[2], 1e-4f)
         assertEquals(12.0f, imputed[3], 1e-4f)
-        assertEquals(350.0f, imputed[4], 1e-4f) // Imputado
+        assertEquals(357.55f, imputed[4], 1e-4f) // Imputado
         assertEquals(400.0f, imputed[5], 1e-4f)
-        assertEquals(45.0f, imputed[6], 1e-4f)  // Imputado
-        assertEquals(40.0f, imputed[7], 1e-4f)  // Imputado
+        assertEquals(49.46f, imputed[6], 1e-4f)  // Imputado
+        assertEquals(44.60f, imputed[7], 1e-4f)  // Imputado
     }
 
     @Test
     fun `training medians must contain exactly 8 default values`() {
         assertEquals(8, strategy.trainingMedians.size)
-        val expectedMedians = floatArrayOf(72f, 9.81f, 0.05f, 10f, 350f, 600f, 45f, 40f)
+        val expectedMedians = floatArrayOf(70.45f, 9.81f, 0.04f, 17.80f, 357.55f, 915.0f, 49.46f, 44.60f)
         assertArrayEquals(expectedMedians, strategy.trainingMedians, 1e-4f)
     }
 }

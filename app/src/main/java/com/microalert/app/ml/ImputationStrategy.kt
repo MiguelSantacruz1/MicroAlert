@@ -8,14 +8,14 @@ import com.microalert.app.domain.model.FeatureVector
  */
 class ImputationStrategy(
     val trainingMedians: FloatArray = floatArrayOf(
-        72.0f,  // 0: heartRate
-        9.81f,  // 1: accelerometerMagnitude
-        0.05f,  // 2: gyroscopeMagnitude
-        10.0f,  // 3: inactivityDurationSeconds
-        350.0f, // 4: reactionTimeMs
-        600.0f, // 5: sessionDurationSeconds
-        45.0f,  // 6: hrvSdnnMs
-        40.0f   // 7: hrvRmssdMs
+        70.45f,  // 0: heartRate (BPM)
+        9.81f,   // 1: accelerometerMagnitude (m/s²)
+        0.04f,   // 2: gyroscopeMagnitude (rad/s)
+        17.80f,  // 3: inactivityDurationSeconds (s)
+        357.55f, // 4: reactionTimeMs (ms)
+        915.0f,  // 5: sessionDurationSeconds (s)
+        49.46f,  // 6: hrvSdnnMs (ms)
+        44.60f   // 7: hrvRmssdMs (ms)
     )
 ) {
     fun imputeVector(rawVector: FeatureVector): FloatArray {
