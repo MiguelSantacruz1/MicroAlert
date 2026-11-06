@@ -1,6 +1,7 @@
 package com.microalert.app.presentation.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
@@ -24,6 +25,7 @@ import com.microalert.app.presentation.sensorstatus.SensorStatusScreen
 import com.microalert.app.presentation.sensorstatus.SensorStatusViewModel
 import com.microalert.app.presentation.settings.SettingsScreen
 import com.microalert.app.presentation.settings.SettingsViewModel
+import com.microalert.app.services.MonitoringForegroundService
 
 object Screen {
     const val HOME = "home"
@@ -58,6 +60,14 @@ fun MicroAlertNavHost(
     val historyUiState by historyViewModel.uiState.collectAsState()
     val settingsUiState by settingsViewModel.uiState.collectAsState()
     val sensorStatusUiState by sensorStatusViewModel.uiState.collectAsState()
+    val context = LocalContext.current
+
+    LaunchedEffect(monitoringViewModel) {
+        monitoringViewModel.alertNavigationEvents.collect { alertEvent ->
+            alertViewModel.onAlertTriggered(alertEvent)
+            navController.navigate(Screen.ALERT)
+        }
+    }
 
     SwipeDismissableNavHost(
         navController = navController,
@@ -68,6 +78,8 @@ fun MicroAlertNavHost(
                 uiState = homeUiState,
                 onStartMonitoringClick = {
                     homeViewModel.toggleMonitoring()
+                    monitoringViewModel.startMonitoring(homeUiState.appMode)
+                    MonitoringForegroundService.startService(context)
                     navController.navigate(Screen.MONITORING)
                 },
                 onNavigateToHistory = { navController.navigate(Screen.HISTORY) },
@@ -85,6 +97,8 @@ fun MicroAlertNavHost(
                 uiState = monitoringUiState,
                 onStopMonitoringClick = {
                     homeViewModel.toggleMonitoring()
+                    monitoringViewModel.stopMonitoring()
+                    MonitoringForegroundService.stopService(context)
                     navController.popBackStack()
                 }
             )
