@@ -47,8 +47,14 @@ MICROALERT se basa en una arquitectura **Clean Architecture + MVVM (Model-View-V
 - **Equivalencia Matemática:** Validación estricta con tolerancia $< 10^{-6}$ contra las probabilidades de referencia de `scikit-learn` registradas en `test_vectors.json`.
 
 ### `domain`
-- Contiene los casos de uso (`StartMonitoringUseCase`, `EvaluateDrowsinessUseCase`, `ManageAlertsUseCase`).
-- Define los modelos de dominio independientes de la plataforma.
+- **Modelos de Negocio:** `RiskLevel` (4 niveles), `RiskClassificationConfig` (umbrales configurables), `WindowDataQuality` (transparencia de señales) y `RiskAssessmentResult`.
+- **Política de Clasificación:** `RiskPolicyManager` implementa el mapeo de probabilidades con filtro de persistencia temporal ($N$ ventanas consecutivas para elevar a `HIGH`/`CRITICAL`) e histéresis anti-rebote para evitar oscilaciones rápidas entre niveles adyacentes al descender de riesgo.
+- **Casos de Uso:**
+  - `EvaluateRiskUseCase`: Orquesta la extracción de calidad de señales, la inferencia local del modelo y la política de riesgo.
+  - `PredictDrowsinessProbabilityUseCase`: Invoca al evaluador del ensamble ML.
+  - `ExtractFeatureVectorUseCase`: Ensambla el vector de 8 variables en orden estricto.
+  - `ProcessSignalWindowUseCase`: Expone las ventanas agregadas por el pipeline de señales.
+  - `ObserveSensorDataUseCase` & `CheckSensorAvailabilityUseCase`: Diagnóstico y flujos de sensores.
 
 ### `data`
 - Coordina los datos entre los sensores, la base de datos local y la configuración del usuario.
