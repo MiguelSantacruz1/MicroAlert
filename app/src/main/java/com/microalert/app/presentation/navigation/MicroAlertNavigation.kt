@@ -9,6 +9,7 @@ import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
 import com.microalert.app.presentation.alert.AlertScreen
 import com.microalert.app.presentation.alert.AlertUiState
+import com.microalert.app.presentation.alert.AlertViewModel
 import com.microalert.app.presentation.history.HistoryUiState
 import com.microalert.app.presentation.history.SessionHistoryScreen
 import com.microalert.app.presentation.home.HomeScreen
@@ -39,12 +40,14 @@ object Screen {
 fun MicroAlertNavHost(
     homeViewModel: HomeViewModel = viewModel(),
     monitoringViewModel: MonitoringViewModel = viewModel(),
-    reactionTestViewModel: ReactionTestViewModel = viewModel()
+    reactionTestViewModel: ReactionTestViewModel = viewModel(),
+    alertViewModel: AlertViewModel = viewModel()
 ) {
     val navController = rememberSwipeDismissableNavController()
     val homeUiState by homeViewModel.uiState.collectAsState()
     val monitoringUiState by monitoringViewModel.uiState.collectAsState()
     val reactionTestUiState by reactionTestViewModel.uiState.collectAsState()
+    val alertUiState by alertViewModel.uiState.collectAsState()
 
     SwipeDismissableNavHost(
         navController = navController,
@@ -76,8 +79,11 @@ fun MicroAlertNavHost(
 
         composable(Screen.ALERT) {
             AlertScreen(
-                uiState = AlertUiState(),
-                onAcknowledgeAlert = { navController.popBackStack() }
+                uiState = alertUiState,
+                onAcknowledgeAlert = {
+                    alertViewModel.acknowledgeAlert()
+                    navController.popBackStack()
+                }
             )
         }
 
