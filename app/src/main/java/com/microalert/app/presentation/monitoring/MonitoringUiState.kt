@@ -7,13 +7,13 @@ import com.microalert.app.domain.model.RiskLevel
  * Estado UI para la pantalla de Monitoreo en vivo con métricas procesadas de ventana.
  */
 data class MonitoringUiState(
-    val isMonitoring: Boolean = true,
+    val isMonitoring: Boolean = false,
     val appMode: AppMode = AppMode.REAL,
     val heartRateBpm: Float = 72.0f,
     val accelerometerMagnitude: Float = 9.81f,
     val gyroscopeMagnitude: Float = 0.04f,
-    val inactivityDurationSeconds: Long = 15L,
-    val sessionDurationSeconds: Long = 120L,
+    val inactivityDurationSeconds: Long = 0L,
+    val sessionDurationSeconds: Long = 0L,
     val currentRiskLevel: RiskLevel = RiskLevel.NORMAL,
     val hrvAvailable: Boolean = false,
     val hrvSdnnMs: Float? = null,
