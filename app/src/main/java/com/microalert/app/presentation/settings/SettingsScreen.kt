@@ -24,6 +24,8 @@ fun SettingsScreen(
     onToggleAppMode: () -> Unit,
     onToggleVibration: () -> Unit,
     onToggleReactionTest: () -> Unit,
+    onCycleCooldown: () -> Unit = {},
+    onClearAllData: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     ScalingLazyColumn(
@@ -61,6 +63,15 @@ fun SettingsScreen(
 
         item {
             StatusChip(
+                label = "Enfriamiento Alerta",
+                statusText = "${uiState.vibrationCooldownSeconds}s",
+                statusColor = MaterialTheme.colorScheme.primary,
+                onClick = onCycleCooldown
+            )
+        }
+
+        item {
+            StatusChip(
                 label = "Prueba de Reacción",
                 statusText = if (uiState.isReactionTestEnabled) "Cada ${uiState.reactionTestIntervalMinutes}m" else "Desactivada",
                 statusColor = if (uiState.isReactionTestEnabled) MaterialTheme.colorScheme.primary else Color(0xFFFF9800),
@@ -80,9 +91,9 @@ fun SettingsScreen(
         item {
             StatusChip(
                 label = "Privacidad",
-                statusText = "100% Local",
-                statusColor = Color(0xFF4CAF50),
-                onClick = {}
+                statusText = "Borrar datos locales",
+                statusColor = MaterialTheme.colorScheme.error,
+                onClick = onClearAllData
             )
         }
     }
