@@ -132,7 +132,15 @@ class AppContainer(private val context: Context) {
                     HomeViewModel() as T
                 }
                 modelClass.isAssignableFrom(MonitoringViewModel::class.java) -> {
-                    MonitoringViewModel() as T
+                    MonitoringViewModel(
+                        sensorRepository = sensorRepository,
+                        signalProcessingPipeline = signalProcessingPipeline,
+                        extractFeatureVectorUseCase = extractFeatureVectorUseCase,
+                        evaluateRiskUseCase = evaluateRiskUseCase,
+                        manageAlertsUseCase = manageAlertsUseCase,
+                        saveSessionUseCase = saveSessionUseCase,
+                        sessionHistoryRepository = sessionHistoryRepository
+                    ) as T
                 }
                 modelClass.isAssignableFrom(AlertViewModel::class.java) -> {
                     AlertViewModel(manageAlertsUseCase) as T
