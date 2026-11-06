@@ -6,16 +6,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
+import com.microalert.app.domain.model.AppMode
 import com.microalert.app.presentation.components.RiskCard
 import com.microalert.app.presentation.components.StatusChip
 
 /**
- * Pantalla de Monitoreo en Tiempo Real (MONITORING).
+ * Pantalla de Monitoreo en Tiempo Real (MONITORING) con indicador de lecturas y calidad de señal.
  */
 @Composable
 fun MonitoringScreen(
@@ -31,10 +33,10 @@ fun MonitoringScreen(
     ) {
         item {
             Text(
-                text = "MONITOREO EN VIVO",
+                text = "MONITOREO [${uiState.appMode.title}]",
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
+                color = if (uiState.appMode == AppMode.REAL) Color(0xFF4CAF50) else Color(0xFFFF9800)
             )
         }
 
@@ -55,6 +57,15 @@ fun MonitoringScreen(
             StatusChip(
                 label = "Acelerómetro",
                 statusText = String.format("%.2f m/s²", uiState.accelerometerMagnitude),
+                statusColor = MaterialTheme.colorScheme.secondary,
+                onClick = {}
+            )
+        }
+
+        item {
+            StatusChip(
+                label = "Giroscopio",
+                statusText = String.format("%.2f rad/s", uiState.gyroscopeMagnitude),
                 statusColor = MaterialTheme.colorScheme.secondary,
                 onClick = {}
             )
