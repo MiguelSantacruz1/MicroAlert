@@ -55,6 +55,15 @@ fun SessionHistoryScreen(
                     onClick = {}
                 )
             }
+
+            item {
+                StatusChip(
+                    label = "Privacidad",
+                    statusText = "Borrar todo el historial",
+                    statusColor = MaterialTheme.colorScheme.error,
+                    onClick = onClearHistoryClick
+                )
+            }
         }
     }
 }
