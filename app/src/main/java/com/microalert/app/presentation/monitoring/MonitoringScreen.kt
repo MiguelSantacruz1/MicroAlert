@@ -17,7 +17,7 @@ import com.microalert.app.presentation.components.RiskCard
 import com.microalert.app.presentation.components.StatusChip
 
 /**
- * Pantalla de Monitoreo en Tiempo Real (MONITORING) con indicador de lecturas y calidad de señal.
+ * Pantalla de Monitoreo en Tiempo Real con métricas procesadas de ventana (BPM, HRV SDNN/RMSSD, inactividad).
  */
 @Composable
 fun MonitoringScreen(
@@ -55,35 +55,28 @@ fun MonitoringScreen(
 
         item {
             StatusChip(
-                label = "Acelerómetro",
-                statusText = String.format("%.2f m/s²", uiState.accelerometerMagnitude),
-                statusColor = MaterialTheme.colorScheme.secondary,
+                label = "HRV (SDNN / RMSSD)",
+                statusText = if (uiState.hrvAvailable && uiState.hrvSdnnMs != null)
+                    "${uiState.hrvSdnnMs.toInt()}ms / ${uiState.hrvRmssdMs?.toInt()}ms"
+                else "N/D (Sin datos IBI)",
+                statusColor = if (uiState.hrvAvailable) MaterialTheme.colorScheme.primary else Color(0xFFFF9800),
                 onClick = {}
             )
         }
 
         item {
             StatusChip(
-                label = "Giroscopio",
-                statusText = String.format("%.2f rad/s", uiState.gyroscopeMagnitude),
-                statusColor = MaterialTheme.colorScheme.secondary,
-                onClick = {}
-            )
-        }
-
-        item {
-            StatusChip(
-                label = "Inactividad",
+                label = "Inactividad Procesada",
                 statusText = "${uiState.inactivityDurationSeconds}s",
-                statusColor = MaterialTheme.colorScheme.onSurface,
+                statusColor = MaterialTheme.colorScheme.secondary,
                 onClick = {}
             )
         }
 
         item {
             StatusChip(
-                label = "Duración Sesión",
-                statusText = "${uiState.sessionDurationSeconds / 60}m ${uiState.sessionDurationSeconds % 60}s",
+                label = "Ventanas Procesadas",
+                statusText = "#${uiState.windowCountProcessed}",
                 statusColor = MaterialTheme.colorScheme.onSurface,
                 onClick = {}
             )
