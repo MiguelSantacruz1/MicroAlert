@@ -1,6 +1,7 @@
 package com.microalert.app
 
 import android.app.Application
+import com.microalert.app.di.AppContainer
 
 /**
  * Clase principal Application para MICROALERT.
@@ -8,8 +9,11 @@ import android.app.Application
  */
 class MicroAlertApp : Application() {
 
+    lateinit var appContainer: AppContainer
+        private set
+
     override fun onCreate() {
         super.onCreate()
-        // Inicialización global del contenedor de dependencias si es necesario
+        appContainer = AppContainer(this)
     }
 }
