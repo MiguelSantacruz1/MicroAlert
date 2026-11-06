@@ -2,72 +2,71 @@
 
 ## 1. Definición del Problema
 
-MICROALERT utiliza un clasificador **Random Forest** entrenado en Python mediante `scikit-learn` y exportado a formato JSON ejecutable de forma nativa en Kotlin.
+MICROALERT utiliza un clasificador **Random Forest** entrenado en Python mediante `scikit-learn` y exportado a formato JSON ejecutable de forma nativa en Kotlin dentro del smartwatch Wear OS.
 
-El modelo calcula la probabilidad de la clase **Somnolencia Detectada** ($P \in [0, 1]$).
+El modelo calcula la probabilidad continua de la clase positiva **Somnolencia Detectada** ($P \in [0, 1]$). La capa de clasificación de riesgo (sección 7) traduce esta probabilidad en cuatro estados (`NORMAL`, `PRECAUCIÓN`, `ALTO`, `CRÍTICO`) mediante umbrales e histéresis temporal.
 
 ---
 
 ## 2. Vector de Características (Feature Vector)
 
-El vector debe mantener de forma estricta el siguiente orden de 8 variables tanto en entrenamiento como en inferencia:
+El vector mantiene de forma estricta el siguiente orden de 8 variables tanto en entrenamiento, exportación e inferencia en Wear OS:
 
-| Índice | Nombre de Variable | Unidad | Descripción / Estadística de Agregación |
-|---|---|---|---|
-| 0 | `heartRate` | BPM | Frecuencia cardíaca media de la ventana |
-| 1 | `accelerometerMagnitude` | m/s² | Magnitud vectorial agregada $(\sqrt{x^2+y^2+z^2})$ |
-| 2 | `gyroscopeMagnitude` | rad/s | Magnitud angular agregada $(\sqrt{wx^2+wy^2+wz^2})$ |
-| 3 | `inactivityDurationSeconds` | s | Tiempo transcurrido sin movimiento significativo |
-| 4 | `reactionTimeMs` | ms | Latencia registrada en prueba de reacción táctil/visual |
-| 5 | `sessionDurationSeconds` | s | Tiempo total transcurrido en la sesión activa |
-| 6 | `hrvSdnnMs` | ms | Desviación estándar de intervalos IBI/RR ($SDNN$) |
-| 7 | `hrvRmssdMs` | ms | Raíz cuadrada de la media de diferencias al cuadrado ($RMSSD$) |
-
----
-
-## 3. Formato de Exportación del Modelo (JSON)
-
-El modelo se serializa en un archivo `model.json` con la siguiente estructura:
-
-```json
-{
-  "version": "1.0.0",
-  "created_at": "2025-03-01T00:00:00Z",
-  "feature_names": [
-    "heartRate",
-    "accelerometerMagnitude",
-    "gyroscopeMagnitude",
-    "inactivityDurationSeconds",
-    "reactionTimeMs",
-    "sessionDurationSeconds",
-    "hrvSdnnMs",
-    "hrvRmssdMs"
-  ],
-  "feature_medians": [72.0, 9.81, 0.05, 10.0, 350.0, 600.0, 45.0, 40.0],
-  "trees": [
-    {
-      "node_id": 0,
-      "feature_index": 0,
-      "threshold": 65.5,
-      "left_child": 1,
-      "right_child": 2,
-      "value": null
-    }
-  ]
-}
-```
+| Índice | Nombre de Variable | Unidad | Estadístico de Agregación | Mediana Imputación |
+|---|---|---|---|---|
+| 0 | `heartRate` | BPM | Media aritmética en ventana de 60s | 70.45 |
+| 1 | `accelerometerMagnitude` | m/s² | Media de magnitud vectorial $(\sqrt{x^2+y^2+z^2})$ | 9.81 |
+| 2 | `gyroscopeMagnitude` | rad/s | Media de magnitud angular $(\sqrt{wx^2+wy^2+wz^2})$ | 0.04 |
+| 3 | `inactivityDurationSeconds` | s | Tiempo acumulado con variación $< 0.35 m/s^2$ | 17.80 |
+| 4 | `reactionTimeMs` | ms | Latencia válida en prueba táctil (últimos 15 min) | 357.55 |
+| 5 | `sessionDurationSeconds` | s | Tiempo total transcurrido en la sesión activa | 915.00 |
+| 6 | `hrvSdnnMs` | ms | Desviación estándar de intervalos IBI/RR ($SDNN$) | 49.46 |
+| 7 | `hrvRmssdMs` | ms | Raíz de la media de diferencias al cuadrado ($RMSSD$) | 44.60 |
 
 ---
 
-## 4. Inferencia en Kotlin
+## 3. Parámetros del Modelo y Arquitectura
 
-1. **Lectura de Entrada:** Se construye la ventana temporal de 60 segundos.
-2. **Imputación de Valores Faltantes:** Si una variable (por ejemplo HRV o tiempo de reacción) no está disponible, se imputa la mediana correspondiente de `feature_medians`.
-3. **Recorrido del Árbol:** Para cada árbol en el bosque, se desciende desde el nodo raíz hasta la hoja evaluando las condiciones $X_i \leq \text{threshold}$.
-4. **Votación Promedio:** La probabilidad final es el promedio de las probabilidades predichas por cada árbol.
+El modelo está optimizado para garantizar una inferencia rápida y bajo consumo de batería en Wear OS:
+- **Algoritmo:** `RandomForestClassifier` (`scikit-learn`).
+- **Número de estimadores (`n_estimators`):** 25 árboles de decisión.
+- **Profundidad máxima (`max_depth`):** 6 niveles.
+- **Criterio de división:** Gini.
+- **Mínimo de muestras por división (`min_samples_split`):** 5.
+- **Mínimo de muestras por hoja (`min_samples_leaf`):** 2.
+- **Semilla fija (`random_state`):** 42 (100% reproducible).
 
 ---
 
-## 5. Criterios de Evaluación y Tolerancia
+## 4. Métricas de Validación (GroupKFold por Participante)
 
-- **Pruebas de Equivalencia:** Se generan vectores de prueba en Python y se verifica que la implementación en Kotlin devuelva probabilidades idénticas con una tolerancia máxima de $10^{-6}$.
+La validación se realizó agrupando por participante (`GroupKFold`, $k=5$, 25 participantes sintéticos, 3000 ventanas) para certificar que ningún participante estuviese simultáneamente en entrenamiento y prueba:
+
+| Métrica | Valor Obtenido (Out-Of-Fold) |
+|---|---|
+| **Accuracy** | 0.9997 |
+| **Precision** | 1.0000 |
+| **Recall / Sensibilidad** | 0.9992 |
+| **F1-Score** | 0.9996 |
+| **Especificidad** | 1.0000 |
+| **Verdaderos Negativos (TN)** | 1732 |
+| **Falsos Positivos (FP)** | 0 |
+| **Falsos Negativos (FN)** | 1 |
+| **Verdaderos Positivos (TP)** | 1267 |
+
+> ⚠️ **Advertencia Metodológica y Ética:** Las métricas superiores al 99% reflejan la coherencia matemática y el ajuste del clasificador sobre el dataset sintético generado para verificación de software. **No representan la precisión clínica real**, la cual debe determinarse mediante ensayos clínicos y protocolos formales con sujetos humanos ([docs/data_protocol.md](file:///C:/Users/Albeiro/StudioProjects/MicroAlert/docs/data_protocol.md)).
+
+---
+
+## 5. Formato de Exportación JSON (`model.json` y `metadata.json`)
+
+El bosque se exporta a formato JSON ligero dentro de `app/src/main/assets/model.json`:
+- **Nodos internos:** `node_id`, `feature_index` (0 a 7), `threshold`, `left_child`, `right_child`, `value = null`.
+- **Nodos hoja:** `node_id`, `feature_index = -1`, `threshold = null`, `left_child = -1`, `right_child = -1`, `value = float` (probabilidad $P \in [0, 1]$).
+
+---
+
+## 6. Criterios de Evaluación y Tolerancia de Equivalencia
+
+- Se dispone del archivo [test_vectors.json](file:///C:/Users/Albeiro/StudioProjects/MicroAlert/app/src/main/assets/test_vectors.json) con vectores de referencia cubriendo alerta, somnolencia, estados límites y variables faltantes.
+- En la prueba cruzada Python-Kotlin, la diferencia absoluta entre la predicción de `scikit-learn` y el evaluador Kotlin debe ser estrictamente menor a **$10^{-6}$**.
