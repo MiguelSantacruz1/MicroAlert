@@ -81,5 +81,14 @@ fun SensorStatusScreen(
                 onClick = {}
             )
         }
+
+        item {
+            StatusChip(
+                label = "Permiso Actividad",
+                statusText = if (uiState.hasActivityRecognitionPermission) "Concedido" else "Pendiente",
+                statusColor = if (uiState.hasActivityRecognitionPermission) Color(0xFF4CAF50) else Color(0xFFFF9800),
+                onClick = {}
+            )
+        }
     }
 }
