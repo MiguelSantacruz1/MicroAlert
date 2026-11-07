@@ -14,15 +14,15 @@ class BufferWindowManagerTest {
 
         val sample1 = SensorSample(timestampMs = 1000L, heartRateBpm = 70f)
         val result1 = manager.addSample(sample1)
-        assertNull(result1) // No emite inmediatamente en la primera muestra
+        assertNull(result1)
 
         val sample2 = SensorSample(timestampMs = 10_000L, heartRateBpm = 72f)
         val result2 = manager.addSample(sample2)
-        assertNull(result2) // No han pasado 30s aún
+        assertNull(result2)
 
         val sample3 = SensorSample(timestampMs = 31_000L, heartRateBpm = 75f)
         val result3 = manager.addSample(sample3)
-        assertNotNull(result3) // Pasaron >= 30s desde el inicio
+        assertNotNull(result3)
         assertEquals(3, result3?.size)
     }
 

@@ -70,15 +70,12 @@ class AlertManagerTest {
             dataQuality = dummyQuality
         )
 
-        // Primera alerta en t = 10,000ms -> Exitosa
         val firstAlert = manager.processRiskAssessment(assessment, currentTimeMs = 10_000L)
         assertNotNull(firstAlert)
 
-        // Segunda alerta en t = 20,000ms (10s después, cooldown de 30s aún activo) -> Suprimida
         val suppressedAlert = manager.processRiskAssessment(assessment, currentTimeMs = 20_000L)
         assertNull(suppressedAlert)
 
-        // Tercera alerta en t = 45,000ms (35s después, cooldown expirado) -> Emitida
         val renewedAlert = manager.processRiskAssessment(assessment, currentTimeMs = 45_000L)
         assertNotNull(renewedAlert)
     }
@@ -97,7 +94,6 @@ class AlertManagerTest {
         val alert = manager.processRiskAssessment(assessment, currentTimeMs = 1000L)
         assertNotNull(alert)
 
-        // Reconocimiento 1500ms después
         val ackAlert = manager.acknowledgeActiveAlert(acknowledgedAtMs = 2500L)
         assertNotNull(ackAlert)
         assertTrue(ackAlert?.isAcknowledged == true)

@@ -17,9 +17,6 @@ data class GyroData(
     val magnitude: Float = 0f
 )
 
-/**
- * Capturador de datos del giroscopio (Sensor.TYPE_GYROSCOPE).
- */
 class GyroscopeSensorManager(context: Context) : SensorEventListener {
 
     private val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager

@@ -20,9 +20,6 @@ import androidx.wear.compose.material3.Text
 import com.microalert.app.domain.model.AppMode
 import com.microalert.app.presentation.components.StatusChip
 
-/**
- * Pantalla principal HOME de MICROALERT.
- */
 @Composable
 fun HomeScreen(
     uiState: HomeUiState,

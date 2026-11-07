@@ -10,10 +10,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-/**
- * ViewModel para gestionar las preferencias de configuración del usuario,
- * modo de funcionamiento (REAL vs DEMO), vibración háptica y derecho al olvido.
- */
 class SettingsViewModel(
     private val clearHistoryUseCase: ClearHistoryUseCase? = null
 ) : ViewModel() {

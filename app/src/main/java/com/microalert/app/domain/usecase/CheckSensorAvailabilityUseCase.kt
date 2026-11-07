@@ -9,9 +9,6 @@ data class SensorAvailabilityResult(
     val isHrvAvailable: Boolean
 )
 
-/**
- * Caso de uso para obtener el diagnóstico completo de disponibilidad de sensores de hardware.
- */
 class CheckSensorAvailabilityUseCase(
     private val sensorRepository: SensorRepository
 ) {

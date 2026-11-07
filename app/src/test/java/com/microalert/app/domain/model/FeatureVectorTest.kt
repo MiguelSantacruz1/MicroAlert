@@ -25,14 +25,14 @@ class FeatureVectorTest {
         val array = vector.toFloatArray(defaultMedians)
 
         assertEquals(8, array.size)
-        assertEquals(68.0f, array[0], 1e-4f) // 0: heartRate
-        assertEquals(9.85f, array[1], 1e-4f) // 1: accelerometerMagnitude
-        assertEquals(0.03f, array[2], 1e-4f) // 2: gyroscopeMagnitude
-        assertEquals(25.0f, array[3], 1e-4f) // 3: inactivityDurationSeconds
-        assertEquals(310.0f, array[4], 1e-4f) // 4: reactionTimeMs
-        assertEquals(180.0f, array[5], 1e-4f) // 5: sessionDurationSeconds
-        assertEquals(50.0f, array[6], 1e-4f) // 6: hrvSdnnMs
-        assertEquals(42.0f, array[7], 1e-4f) // 7: hrvRmssdMs
+        assertEquals(68.0f, array[0], 1e-4f)
+        assertEquals(9.85f, array[1], 1e-4f)
+        assertEquals(0.03f, array[2], 1e-4f)
+        assertEquals(25.0f, array[3], 1e-4f)
+        assertEquals(310.0f, array[4], 1e-4f)
+        assertEquals(180.0f, array[5], 1e-4f)
+        assertEquals(50.0f, array[6], 1e-4f)
+        assertEquals(42.0f, array[7], 1e-4f)
     }
 
     @Test
@@ -51,13 +51,13 @@ class FeatureVectorTest {
         val array = vectorWithNulls.toFloatArray(defaultMedians)
 
         assertEquals(8, array.size)
-        assertEquals(defaultMedians[0], array[0], 1e-4f) // Imputa HR = 72.0
+        assertEquals(defaultMedians[0], array[0], 1e-4f)
         assertEquals(9.80f, array[1], 1e-4f)
         assertEquals(0.04f, array[2], 1e-4f)
         assertEquals(15.0f, array[3], 1e-4f)
-        assertEquals(defaultMedians[4], array[4], 1e-4f) // Imputa Reacción = 350.0
+        assertEquals(defaultMedians[4], array[4], 1e-4f)
         assertEquals(300.0f, array[5], 1e-4f)
-        assertEquals(defaultMedians[6], array[6], 1e-4f) // Imputa SDNN = 45.0
-        assertEquals(defaultMedians[7], array[7], 1e-4f) // Imputa RMSSD = 40.0
+        assertEquals(defaultMedians[6], array[6], 1e-4f)
+        assertEquals(defaultMedians[7], array[7], 1e-4f)
     }
 }

@@ -1,9 +1,5 @@
 package com.microalert.app.domain.model
 
-/**
- * Representa la calidad y disponibilidad de las señales capturadas en una ventana de evaluación.
- * Permite informar al usuario con transparencia qué datos son reales y cuáles fueron imputados.
- */
 data class WindowDataQuality(
     val isHeartRateReal: Boolean,
     val isAccelerometerReal: Boolean,

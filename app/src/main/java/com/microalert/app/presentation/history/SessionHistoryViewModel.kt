@@ -12,10 +12,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-/**
- * ViewModel reactivo para la pantalla de historial de sesiones.
- * Gestiona la carga de sesiones persistidas en Room y el borrado seguro para privacidad.
- */
 class SessionHistoryViewModel(
     private val getSessionHistoryUseCase: GetSessionHistoryUseCase,
     private val clearHistoryUseCase: ClearHistoryUseCase

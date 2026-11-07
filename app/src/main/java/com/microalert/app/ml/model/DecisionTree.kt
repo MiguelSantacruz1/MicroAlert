@@ -1,8 +1,5 @@
 package com.microalert.app.ml.model
 
-/**
- * Representa un árbol de decisión individual compuesto por una lista de nodos ordenados por su nodeId.
- */
 data class DecisionTree(
     val nodes: List<DecisionTreeNode>
 ) {

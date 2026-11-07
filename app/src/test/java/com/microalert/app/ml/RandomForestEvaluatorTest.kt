@@ -32,7 +32,6 @@ class RandomForestEvaluatorTest {
         val features = FloatArray(8) { 10f }
         val probability = evaluator.predictProbability(model, features)
 
-        // (0.20 + 0.80) / 2 = 0.50
         assertEquals(0.50f, probability, 1e-6f)
     }
 
@@ -48,6 +47,6 @@ class RandomForestEvaluatorTest {
             rawTrees = listOf(listOf(DecisionTreeNode(0, -1, null, -1, -1, 0.5f)))
         )
 
-        evaluator.predictProbability(model, FloatArray(7)) // 7 variables en lugar de 8
+        evaluator.predictProbability(model, FloatArray(7))
     }
 }

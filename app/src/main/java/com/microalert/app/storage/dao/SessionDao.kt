@@ -7,9 +7,6 @@ import androidx.room.Query
 import com.microalert.app.storage.entity.MonitoringSessionEntity
 import kotlinx.coroutines.flow.Flow
 
-/**
- * Data Access Object (DAO) para sesiones de monitoreo.
- */
 @Dao
 interface SessionDao {
 

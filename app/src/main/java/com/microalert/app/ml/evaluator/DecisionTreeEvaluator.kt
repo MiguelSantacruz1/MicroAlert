@@ -3,10 +3,6 @@ package com.microalert.app.ml.evaluator
 import com.microalert.app.ml.model.DecisionTree
 import com.microalert.app.ml.model.DecisionTreeNode
 
-/**
- * Evaluador de recorrido iterativo para un único árbol de decisión.
- * Optimizado para bajo consumo de memoria y ejecución rápida en smartwatches.
- */
 class DecisionTreeEvaluator {
 
     fun evaluate(tree: DecisionTree, features: FloatArray): Float {

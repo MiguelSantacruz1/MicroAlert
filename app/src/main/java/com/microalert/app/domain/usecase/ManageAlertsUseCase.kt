@@ -6,9 +6,6 @@ import com.microalert.app.domain.model.RiskAssessmentResult
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 
-/**
- * Caso de uso para gestionar la activación, reconocimiento y observación de alertas del sistema.
- */
 class ManageAlertsUseCase(
     private val alertManager: AlertManager
 ) {

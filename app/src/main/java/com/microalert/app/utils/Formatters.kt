@@ -4,9 +4,6 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-/**
- * Utilidades centralizadas para formateo legible de marcas de tiempo y duraciones en Wear OS.
- */
 object Formatters {
 
     private val sessionDateFormat = SimpleDateFormat("dd MMM, hh:mm a", Locale.getDefault())

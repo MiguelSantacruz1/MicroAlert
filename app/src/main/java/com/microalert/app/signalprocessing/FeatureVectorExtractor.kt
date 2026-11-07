@@ -3,9 +3,6 @@ package com.microalert.app.signalprocessing
 import com.microalert.app.domain.model.FeatureVector
 import com.microalert.app.signalprocessing.model.ProcessedWindowData
 
-/**
- * Ensamblador del Vector de 8 Características a partir de la ventana procesada y estados del sistema.
- */
 class FeatureVectorExtractor {
 
     fun extractFeatureVector(

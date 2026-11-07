@@ -7,9 +7,6 @@ import com.microalert.app.ml.loader.ModelLoader
 import com.microalert.app.ml.model.ModelMetadata
 import com.microalert.app.ml.model.RandomForestModel
 
-/**
- * Implementación del repositorio de modelo con caché en memoria y evaluación de inferencia.
- */
 class DrowsinessModelRepositoryImpl(
     private val modelLoader: ModelLoader,
     private val evaluator: RandomForestEvaluator = RandomForestEvaluator(),

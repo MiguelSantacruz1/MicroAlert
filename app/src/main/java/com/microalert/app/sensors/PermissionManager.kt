@@ -6,9 +6,6 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.content.ContextCompat
 
-/**
- * Gestor integral de permisos para sensores corporales, actividad física y notificaciones en Wear OS.
- */
 class PermissionManager(private val context: Context) {
 
     fun hasBodySensorsPermission(): Boolean {

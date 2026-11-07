@@ -12,11 +12,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-/**
- * Gestor del sistema de alertas visuales y hápticas.
- * Controla el ciclo de vida de la alerta activa, el tiempo de enfriamiento (cooldown)
- * para evitar vibraciones excesivas y el registro del reconocimiento por el usuario.
- */
 class AlertManager(
     private val hapticFeedbackManager: HapticFeedbackManager? = null,
     val config: AlertPolicyConfig = AlertPolicyConfig()
@@ -30,10 +25,6 @@ class AlertManager(
     private var lastAlertTimestampMs: Long = 0L
     private var lastAlertLevel: RiskLevel? = null
 
-    /**
-     * Procesa el resultado de evaluación de riesgo y determina si corresponde disparar una alerta.
-     * Retorna el evento creado o null si se encuentra en periodo de enfriamiento (cooldown).
-     */
     fun processRiskAssessment(
         assessment: RiskAssessmentResult,
         currentTimeMs: Long = System.currentTimeMillis()
@@ -43,7 +34,6 @@ class AlertManager(
             return null
         }
 
-        // Verificar periodo de enfriamiento (cooldown) según el nivel
         val cooldownMs = when (level) {
             RiskLevel.CRITICAL -> config.criticalCooldownMs
             RiskLevel.HIGH -> config.highCooldownMs
@@ -55,7 +45,7 @@ class AlertManager(
         val isCooldownActive = lastAlertTimestampMs > 0L && elapsedSinceLast < cooldownMs && lastAlertLevel == level
 
         if (isCooldownActive) {
-            return null // Bloqueado por enfriamiento para no fatigar al usuario
+            return null
         }
 
         val message = when (level) {
@@ -77,7 +67,6 @@ class AlertManager(
         _activeAlert.value = alertEvent
         _alertEventStream.tryEmit(alertEvent)
 
-        // Activar vibración háptica si está habilitada
         if (config.isVibrationEnabled) {
             hapticFeedbackManager?.triggerRiskAlertHaptic(level)
         }
@@ -85,9 +74,6 @@ class AlertManager(
         return alertEvent
     }
 
-    /**
-     * Reconoce la alerta activa actual, cancela vibraciones continuas y emite háptica de confirmación.
-     */
     fun acknowledgeActiveAlert(acknowledgedAtMs: Long = System.currentTimeMillis()): AlertEvent? {
         val current = _activeAlert.value ?: return null
         val acknowledgedAlert = current.acknowledge(acknowledgedAtMs)

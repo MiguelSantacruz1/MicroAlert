@@ -23,7 +23,7 @@ class HrvCalculatorTest {
 
         assertNotNull(result.sdnnMs)
         assertNotNull(result.rmssdMs)
-        // SDNN media=804. SDNN aprox 9.61
+
         assertEquals(9.61f, result.sdnnMs!!, 0.5f)
     }
 }

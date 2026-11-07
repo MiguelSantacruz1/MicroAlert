@@ -8,9 +8,6 @@ enum class ReactionTestPhase {
     SAFETY_WARNING
 }
 
-/**
- * Estado UI de la prueba de reacción interactiva en Wear OS.
- */
 data class ReactionTestUiState(
     val phase: ReactionTestPhase = ReactionTestPhase.INSTRUCTIONS,
     val lastLatencyMs: Long? = null,

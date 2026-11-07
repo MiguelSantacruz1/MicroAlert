@@ -1,8 +1,5 @@
 package com.microalert.app.domain.model
 
-/**
- * Representa un evento de alerta disparado por el sistema de monitoreo.
- */
 data class AlertEvent(
     val id: String = java.util.UUID.randomUUID().toString(),
     val timestampMs: Long = System.currentTimeMillis(),

@@ -17,9 +17,6 @@ import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
 import com.microalert.app.domain.model.RiskLevel
 
-/**
- * Tarjeta indicadora del Nivel de Riesgo para Wear OS.
- */
 @Composable
 fun RiskCard(
     riskLevel: RiskLevel,

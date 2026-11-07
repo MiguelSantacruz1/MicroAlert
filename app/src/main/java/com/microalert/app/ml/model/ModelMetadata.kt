@@ -2,9 +2,6 @@ package com.microalert.app.ml.model
 
 import com.google.gson.annotations.SerializedName
 
-/**
- * Metadatos asociados al modelo Random Forest exportado.
- */
 data class ModelMetadata(
     @SerializedName("version")
     val version: String,

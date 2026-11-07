@@ -12,10 +12,6 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
-/**
- * Simulador de datos de sensores para el MODO DEMO.
- * Genera métricas fisiológicas sintéticas realistas para pruebas sin sensores de hardware.
- */
 class DemoSensorSimulator : SensorDataSource {
 
     private val _sensorDataStream = MutableStateFlow(SensorSample())

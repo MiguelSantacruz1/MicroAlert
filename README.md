@@ -1,18 +1,18 @@
-# MICROALERT ⌚🚨
+# MICROALERT
 
 **MICROALERT** es una aplicación nativa para relojes inteligentes (Wear OS) diseñada para identificar posibles patrones fisiológicos y conductuales relacionados con la somnolencia mediante el análisis en tiempo real de sensores, procesamiento de señales e inferencia local de Machine Learning (Random Forest).
 
 ---
 
-## 🎯 Objetivo del Proyecto
+## Objetivo del Proyecto
 
 Monitorear variables fisiológicas y de movimiento durante sesiones activas en un smartwatch para clasificar el nivel de riesgo de somnolencia en 4 categorías (`NORMAL`, `PRECAUCIÓN`, `ALTO`, `CRÍTICO`) y emitir alertas visuales y hápticas personalizadas.
 
-> ⚠️ **Exención de responsabilidad médica:** MICROALERT es un prototipo experimental de asistencia. No es un dispositivo médico, no realiza diagnósticos clínicos ni reemplaza el descanso adecuado o las medidas de seguridad del usuario.
+> **Exención de responsabilidad médica:** MICROALERT es un prototipo experimental de asistencia. No es un dispositivo médico, no realiza diagnósticos clínicos ni reemplaza el descanso adecuado o las medidas de seguridad del usuario.
 
 ---
 
-## 🏗️ Arquitectura y Tecnologías
+## Arquitectura y Tecnologías
 
 - **Plataforma:** Wear OS (Android API 30+ / minSdk 30, targetSdk 35)
 - **Lenguaje:** Kotlin
@@ -27,7 +27,7 @@ Monitorear variables fisiológicas y de movimiento durante sesiones activas en u
 
 ---
 
-## 📊 Vector de Características (Machine Learning)
+## Vector de Características (Machine Learning)
 
 El modelo Random Forest evalúa ventanas temporales continuas utilizando un vector estricto de 8 variables:
 
@@ -42,23 +42,23 @@ El modelo Random Forest evalúa ventanas temporales continuas utilizando un vect
 
 ---
 
-## 🚦 Niveles de Riesgo y Alertas
+## Niveles de Riesgo y Alertas
 
-- 🟢 **NORMAL:** Sin indicadores significativos de somnolencia.
-- 🟡 **PRECAUCIÓN:** Patrones iniciales que requieren atención.
-- 🟠 **ALTO:** Múltiples indicadores coincidentes de fatiga/somnolencia.
-- 🔴 **CRÍTICO:** Patrón claro de alto riesgo; requiere alerta inmediata visual y vibración háptica continua con enfriamiento.
+- **NORMAL:** Sin indicadores significativos de somnolencia.
+- **PRECAUCIÓN:** Patrones iniciales que requieren atención.
+- **ALTO:** Múltiples indicadores coincidentes de fatiga/somnolencia.
+- **CRÍTICO:** Patrón claro de alto riesgo; requiere alerta inmediata visual y vibración háptica continua con enfriamiento.
 
 ---
 
-## ⚙️ Modos de Funcionamiento
+## Modos de Funcionamiento
 
 - **Modo REAL:** Captura directa de sensores de hardware y procesamiento en vivo.
 - **Modo DEMO:** Simulación interactiva de patrones fisiológicos y prueba de niveles de riesgo.
 
 ---
 
-## 🛠️ Estructura del Proyecto
+## Estructura del Proyecto
 
 ```text
 com.microalert.app/
@@ -76,16 +76,16 @@ com.microalert.app/
 
 ---
 
-## 🧪 Verificación y Pruebas Unitarias
+## Verificación y Pruebas Unitarias
 
 El proyecto cuenta con una suite completa de pruebas unitarias y de integración que certifican la equivalencia numérica del modelo Random Forest con respecto a Python scikit-learn ($< 10^{-6}$), la estabilidad temporal ante artefactos y la resiliencia en almacenamiento:
 
-- **Total de pruebas automatizadas:** 54 pruebas unitarias e integración en JVM.
-- **Tasa de éxito:** 100% pasando (`./gradlew testDebugUnitTest`).
+- **Total de pruebas automatizadas:** 62 pruebas unitarias e integración en JVM.
+- **Tasa de éxito:** 100% pasando (`gradle testDebugUnitTest`).
 - **Historial de Commits:** Desarrollo granular riguroso siguiendo Conventional Commits en español.
 
 ---
 
-## 📜 Licencia
+## Licencia
 
 Distribuido bajo la Licencia MIT. Consulta `LICENSE` para más información.

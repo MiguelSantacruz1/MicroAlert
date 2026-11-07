@@ -5,10 +5,6 @@ import com.microalert.app.domain.model.FeatureVector
 import com.microalert.app.domain.model.RiskAssessmentResult
 import com.microalert.app.domain.model.WindowDataQuality
 
-/**
- * Caso de uso integral para evaluar el riesgo de somnolencia a partir del vector de características.
- * Orquesta la predicción del modelo ML, el cálculo de calidad de datos y la política de riesgo.
- */
 class EvaluateRiskUseCase(
     private val predictDrowsinessProbabilityUseCase: PredictDrowsinessProbabilityUseCase,
     private val riskPolicyManager: RiskPolicyManager = RiskPolicyManager()

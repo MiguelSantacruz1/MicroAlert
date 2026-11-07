@@ -24,12 +24,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-/**
- * ViewModel que orquesta el ciclo de monitoreo continuo de somnolencia:
- * Ingesta de sensores -> Pipeline temporal -> Vector de 8 características ->
- * Inferencia de Random Forest -> Evaluación de riesgo con histéresis ->
- * Alertas hápticas y almacenamiento local en Room.
- */
 class MonitoringViewModel(
     private val sensorRepository: SensorRepository? = null,
     private val signalProcessingPipeline: SignalProcessingPipeline? = null,
@@ -78,7 +72,6 @@ class MonitoringViewModel(
             )
         }
 
-        // Timer de sesión
         timerJob = viewModelScope.launch {
             while (_uiState.value.isMonitoring) {
                 delay(1000L)
@@ -89,7 +82,6 @@ class MonitoringViewModel(
 
         sensorRepository?.startMonitoring(mode)
 
-        // Escucha de flujo de muestras
         sensorRepository?.let { repo ->
             monitoringJob = viewModelScope.launch {
                 repo.getSensorDataStream().collect { sample ->
@@ -111,7 +103,6 @@ class MonitoringViewModel(
             }
         }
 
-        // Escucha de ventanas procesadas
         signalProcessingPipeline?.let { pipeline ->
             windowJob = viewModelScope.launch {
                 pipeline.windowStream.collect { windowData ->
@@ -143,7 +134,6 @@ class MonitoringViewModel(
                             )
                         }
 
-                        // Evaluación y gestión de alertas hápticas
                         if (manageAlertsUseCase != null) {
                             val alertEvent = manageAlertsUseCase.onRiskAssessed(
                                 assessment = riskResult,

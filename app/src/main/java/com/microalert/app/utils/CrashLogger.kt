@@ -2,9 +2,6 @@ package com.microalert.app.utils
 
 import android.util.Log
 
-/**
- * Registrador local de diagnósticos y fallos no fatales sin dependencias de servicios externos.
- */
 object CrashLogger {
     private const val TAG = "MICROALERT_DIAGNOSTICS"
 

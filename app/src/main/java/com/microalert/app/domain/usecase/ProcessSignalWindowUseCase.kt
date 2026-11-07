@@ -5,9 +5,6 @@ import com.microalert.app.signalprocessing.SignalProcessingPipeline
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-/**
- * Caso de uso para exponer las ventanas procesadas convertidas a modelos de dominio.
- */
 class ProcessSignalWindowUseCase(
     private val pipeline: SignalProcessingPipeline
 ) {

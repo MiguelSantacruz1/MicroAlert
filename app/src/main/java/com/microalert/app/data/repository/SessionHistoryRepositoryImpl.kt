@@ -11,9 +11,6 @@ import com.microalert.app.storage.entity.MonitoringSessionEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-/**
- * Implementación de SessionHistoryRepository utilizando Room DAOs.
- */
 class SessionHistoryRepositoryImpl(
     private val sessionDao: SessionDao,
     private val alertDao: AlertDao

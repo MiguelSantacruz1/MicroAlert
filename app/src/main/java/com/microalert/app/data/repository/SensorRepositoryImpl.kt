@@ -16,9 +16,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 
-/**
- * Implementación del repositorio de sensores con integración del pipeline de procesamiento por ventanas.
- */
 class SensorRepositoryImpl(context: Context) : SensorRepository {
 
     private val realCollector = SensorDataCollector(context)

@@ -9,9 +9,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-/**
- * Gestor de captura de frecuencia cardíaca (BPM) utilizando Android SensorManager (Sensor.TYPE_HEART_RATE).
- */
 class HeartRateSensorManager(context: Context) : SensorEventListener {
 
     private val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
@@ -50,6 +47,6 @@ class HeartRateSensorManager(context: Context) : SensorEventListener {
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-        // Manejo opcional de cambios de precisión de señal
+
     }
 }

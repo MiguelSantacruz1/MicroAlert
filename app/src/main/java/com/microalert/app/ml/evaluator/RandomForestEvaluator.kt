@@ -2,10 +2,6 @@ package com.microalert.app.ml.evaluator
 
 import com.microalert.app.ml.model.RandomForestModel
 
-/**
- * Evaluador del ensamble Random Forest en Kotlin.
- * Calcula la probabilidad de somnolencia promediando las probabilidades emitidas por cada árbol.
- */
 class RandomForestEvaluator(
     private val treeEvaluator: DecisionTreeEvaluator = DecisionTreeEvaluator()
 ) {

@@ -3,9 +3,6 @@ package com.microalert.app.signalprocessing
 import com.microalert.app.sensors.model.SensorSample
 import kotlin.math.abs
 
-/**
- * Detector de inactividad física basado en la acelerometría y variaciones de movimiento.
- */
 class InactivityDetector(
     val movementThreshold: Float = 0.35f
 ) {
@@ -22,7 +19,6 @@ class InactivityDetector(
             }
         }
 
-        // Estimación del tiempo considerando una frecuencia de muestreo de ~2 Hz (0.5s por muestra)
         return (inactiveCount * 0.5f).toLong()
     }
 }

@@ -1,8 +1,5 @@
 package com.microalert.app.presentation.navigation
 
-/**
- * Rutas declarativas y nombres de pantalla para la navegación en Wear OS.
- */
 sealed class AppDestination(val route: String, val title: String) {
     object Home : AppDestination(Screen.HOME, "Inicio")
     object Monitoring : AppDestination(Screen.MONITORING, "Monitoreo")
