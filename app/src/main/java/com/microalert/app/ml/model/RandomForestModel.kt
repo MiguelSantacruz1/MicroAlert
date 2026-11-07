@@ -2,9 +2,6 @@ package com.microalert.app.ml.model
 
 import com.google.gson.annotations.SerializedName
 
-/**
- * Representa el modelo completo de Random Forest deserializado a partir de model.json.
- */
 data class RandomForestModel(
     @SerializedName("version")
     val version: String,

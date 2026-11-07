@@ -16,9 +16,6 @@ import com.microalert.app.domain.model.AppMode
 import com.microalert.app.presentation.components.RiskCard
 import com.microalert.app.presentation.components.StatusChip
 
-/**
- * Pantalla de Monitoreo en Tiempo Real con métricas procesadas de ventana (BPM, HRV SDNN/RMSSD, inactividad).
- */
 @Composable
 fun MonitoringScreen(
     uiState: MonitoringUiState,

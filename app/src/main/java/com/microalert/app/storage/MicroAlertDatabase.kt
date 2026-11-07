@@ -9,10 +9,6 @@ import com.microalert.app.storage.dao.SessionDao
 import com.microalert.app.storage.entity.AlertRecordEntity
 import com.microalert.app.storage.entity.MonitoringSessionEntity
 
-/**
- * Base de datos principal de Room para MICROALERT.
- * 100% local, privada y sin dependencias de red.
- */
 @Database(
     entities = [
         MonitoringSessionEntity::class,

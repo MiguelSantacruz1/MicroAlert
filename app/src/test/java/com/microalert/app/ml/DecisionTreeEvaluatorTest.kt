@@ -26,7 +26,7 @@ class DecisionTreeEvaluatorTest {
 
     @Test
     fun `evaluator should follow left branch when feature is less than or equal to threshold`() {
-        // Árbol simple: Si x[0] <= 65.0 -> Hoja(0.10) sino -> Hoja(0.90)
+
         val tree = DecisionTree(
             listOf(
                 DecisionTreeNode(nodeId = 0, featureIndex = 0, threshold = 65.0f, leftChild = 1, rightChild = 2, value = null),

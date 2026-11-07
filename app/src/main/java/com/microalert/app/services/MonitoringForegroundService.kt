@@ -16,11 +16,6 @@ import androidx.core.app.ServiceCompat
 import com.microalert.app.R
 import com.microalert.app.presentation.MainActivity
 
-/**
- * Servicio en primer plano para monitoreo continuo de sensores fisiológicos en Wear OS.
- * Implementa canal de alta prioridad, Ongoing Activity, gestión de WakeLock segura y
- * ciclo de vida optimizado para preservación de batería.
- */
 class MonitoringForegroundService : Service() {
 
     private var wakeLock: PowerManager.WakeLock? = null
@@ -105,7 +100,7 @@ class MonitoringForegroundService : Service() {
                 setReferenceCounted(false)
             }
         }
-        wakeLock?.acquire(60 * 60 * 1000L) // 1 hora de seguridad máxima
+        wakeLock?.acquire(60 * 60 * 1000L)
     }
 
     private fun releaseWakeLock() {

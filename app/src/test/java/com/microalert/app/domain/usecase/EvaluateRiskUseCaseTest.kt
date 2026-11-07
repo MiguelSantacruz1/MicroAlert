@@ -70,8 +70,8 @@ class EvaluateRiskUseCaseTest {
             inactivityDurationSeconds = 52f,
             reactionTimeMs = 680f,
             sessionDurationSeconds = 1500f,
-            hrvSdnnMs = null, // Imputado
-            hrvRmssdMs = null // Imputado
+            hrvSdnnMs = null,
+            hrvRmssdMs = null
         )
 
         val result = useCase(drowsyVector)
@@ -80,7 +80,6 @@ class EvaluateRiskUseCaseTest {
         assertEquals(RiskLevel.CRITICAL, result.effectiveRiskLevel)
         assertTrue(result.isAlertTriggered)
 
-        // Verificación de transparencia de datos
         assertFalse(result.dataQuality.isHrvAvailable)
         assertEquals(6, result.dataQuality.realFeaturesCount)
         assertEquals(75.0f, result.dataQuality.qualityPercentage, 1e-4f)

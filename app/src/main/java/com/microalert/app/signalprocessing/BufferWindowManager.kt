@@ -3,10 +3,6 @@ package com.microalert.app.signalprocessing
 import com.microalert.app.sensors.model.SensorSample
 import java.util.ArrayDeque
 
-/**
- * Gestor de ventana temporal deslizante.
- * Almacena muestras durante 60 segundos y emite ventanas cada 30 segundos (paso/step).
- */
 class BufferWindowManager(
     val windowDurationMs: Long = 60_000L,
     val windowStepMs: Long = 30_000L,
@@ -18,19 +14,16 @@ class BufferWindowManager(
     fun addSample(sample: SensorSample): List<SensorSample>? {
         samplesBuffer.addLast(sample)
 
-        // Eliminar muestras más antiguas que la duración de la ventana
         val cutoffTimestamp = sample.timestampMs - windowDurationMs
         while (samplesBuffer.isNotEmpty() && samplesBuffer.first.timestampMs < cutoffTimestamp) {
             samplesBuffer.removeFirst()
         }
 
-        // Inicializar timestamp base en la primera muestra
         if (lastEmittedTimestampMs == 0L) {
             lastEmittedTimestampMs = sample.timestampMs
             return if (emitOnFirstSample) samplesBuffer.toList() else null
         }
 
-        // Verificar si ha transcurrido el tiempo de paso desde la última emisión
         if ((sample.timestampMs - lastEmittedTimestampMs) >= windowStepMs) {
             lastEmittedTimestampMs = sample.timestampMs
             return samplesBuffer.toList()

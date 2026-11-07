@@ -5,9 +5,6 @@ import androidx.room.PrimaryKey
 import com.microalert.app.domain.model.AppMode
 import com.microalert.app.domain.model.RiskLevel
 
-/**
- * Entidad Room para registrar una sesión de monitoreo completada.
- */
 @Entity(tableName = "monitoring_sessions")
 data class MonitoringSessionEntity(
     @PrimaryKey(autoGenerate = true)
@@ -15,8 +12,8 @@ data class MonitoringSessionEntity(
     val startTimestampMs: Long,
     val endTimestampMs: Long,
     val durationSeconds: Long,
-    val appMode: String, // "REAL" o "DEMO"
-    val maxRiskLevel: String, // NORMAL, PRECAUTION, HIGH, CRITICAL
+    val appMode: String,
+    val maxRiskLevel: String,
     val alertsTriggeredCount: Int,
     val avgHeartRateBpm: Float?,
     val processedWindowsCount: Int

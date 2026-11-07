@@ -33,10 +33,6 @@ import com.microalert.app.presentation.settings.SettingsViewModel
 import com.microalert.app.storage.MicroAlertDatabase
 import com.microalert.app.utils.HapticFeedbackManager
 
-/**
- * Contenedor de dependencias manual (Service Locator) para toda la aplicación.
- * Garantiza desacoplamiento limpio, ciclo de vida único y testing modular.
- */
 class AppContainer(private val context: Context) {
 
     val database: MicroAlertDatabase by lazy {
@@ -83,7 +79,6 @@ class AppContainer(private val context: Context) {
         com.microalert.app.signalprocessing.ReactionTestManager()
     }
 
-    // Casos de uso
     val saveSessionUseCase: SaveSessionUseCase by lazy {
         SaveSessionUseCase(sessionHistoryRepository)
     }

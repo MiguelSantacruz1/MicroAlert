@@ -19,9 +19,6 @@ import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
 
-/**
- * Componente interactivo Chip para Wear OS optimizado para pantallas pequeñas circular/rectangular.
- */
 @Composable
 fun StatusChip(
     label: String,

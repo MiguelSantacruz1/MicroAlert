@@ -15,7 +15,7 @@ class InactivityDetectorTest {
         }
 
         val seconds = detector.calculateInactivityDurationSeconds(staticSamples)
-        assertEquals(5L, seconds) // 10 muestras * 0.5s = 5s
+        assertEquals(5L, seconds)
     }
 
     @Test

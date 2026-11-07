@@ -21,7 +21,7 @@ class RiskPolicyManagerTest {
 
     @Test
     fun `evaluateProbability should map exact thresholds to corresponding RiskLevel`() {
-        // Con persistence = 1 probamos mapeo directo de umbrales
+
         val manager = RiskPolicyManager(
             config = RiskClassificationConfig(
                 precautionThreshold = 0.30f,

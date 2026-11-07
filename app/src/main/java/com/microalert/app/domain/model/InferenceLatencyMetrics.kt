@@ -1,8 +1,5 @@
 package com.microalert.app.domain.model
 
-/**
- * Métricas de latencia de inferencia y procesamiento para garantizar ejecución < 50ms en Wear OS.
- */
 data class InferenceLatencyMetrics(
     val windowAggregationTimeMs: Long = 0L,
     val featureExtractionTimeMs: Long = 0L,

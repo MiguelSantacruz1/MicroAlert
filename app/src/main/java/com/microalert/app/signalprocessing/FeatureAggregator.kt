@@ -3,9 +3,6 @@ package com.microalert.app.signalprocessing
 import com.microalert.app.sensors.model.SensorSample
 import com.microalert.app.signalprocessing.model.ProcessedWindowData
 
-/**
- * Agregador de características fisiológicas y cinemáticas dentro de una ventana temporal delimitada.
- */
 class FeatureAggregator {
 
     private val hrvCalculator = HrvCalculator()

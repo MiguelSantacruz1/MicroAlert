@@ -10,9 +10,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-/**
- * ViewModel para gestionar el estado de la pantalla ALERT y la respuesta del usuario.
- */
 class AlertViewModel(
     private val manageAlertsUseCase: ManageAlertsUseCase? = null
 ) : ViewModel() {

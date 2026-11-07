@@ -14,9 +14,6 @@ import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
 import com.microalert.app.presentation.components.StatusChip
 
-/**
- * Pantalla SESSION HISTORY de sesiones de monitoreo registradas localmente.
- */
 @Composable
 fun SessionHistoryScreen(
     uiState: HistoryUiState,

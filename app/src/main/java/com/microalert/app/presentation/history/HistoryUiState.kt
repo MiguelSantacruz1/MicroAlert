@@ -2,9 +2,6 @@ package com.microalert.app.presentation.history
 
 import com.microalert.app.domain.model.RiskLevel
 
-/**
- * Modelo de una sesión registrada en el historial.
- */
 data class SessionHistoryItem(
     val id: Long,
     val dateFormatted: String,
@@ -13,9 +10,6 @@ data class SessionHistoryItem(
     val alertCount: Int
 )
 
-/**
- * Estado UI de la pantalla de Historial de Sesiones.
- */
 data class HistoryUiState(
     val sessions: List<SessionHistoryItem> = listOf(
         SessionHistoryItem(1, "Hoy, 10:15 AM", "45 min", RiskLevel.NORMAL, 0),

@@ -14,9 +14,6 @@ import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
 import com.microalert.app.presentation.components.StatusChip
 
-/**
- * Pantalla SENSOR STATUS para diagnóstico de hardware y permisos de Wear OS.
- */
 @Composable
 fun SensorStatusScreen(
     uiState: SensorStatusUiState,

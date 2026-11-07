@@ -1,8 +1,5 @@
 package com.microalert.app.signalprocessing.model
 
-/**
- * Representa el resultado procesado de una ventana temporal de 60 segundos.
- */
 data class ProcessedWindowData(
     val windowStartTimestampMs: Long,
     val windowEndTimestampMs: Long,

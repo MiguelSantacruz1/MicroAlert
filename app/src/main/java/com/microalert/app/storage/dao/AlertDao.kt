@@ -7,9 +7,6 @@ import androidx.room.Query
 import com.microalert.app.storage.entity.AlertRecordEntity
 import kotlinx.coroutines.flow.Flow
 
-/**
- * Data Access Object (DAO) para eventos de alerta.
- */
 @Dao
 interface AlertDao {
 

@@ -1,8 +1,5 @@
 package com.microalert.app.domain.model
 
-/**
- * Textos y directrices normativas de exención de responsabilidad médica para MICROALERT.
- */
 object ClinicalDisclaimer {
     const val SHORT_DISCLAIMER = "MICROALERT es un asistente experimental de detección de somnolencia. No es un dispositivo médico."
     const val FULL_DISCLAIMER = "MICROALERT es un prototipo experimental para fines de asistencia e investigación. " +

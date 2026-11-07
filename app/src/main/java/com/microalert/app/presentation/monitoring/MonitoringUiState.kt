@@ -3,9 +3,6 @@ package com.microalert.app.presentation.monitoring
 import com.microalert.app.domain.model.AppMode
 import com.microalert.app.domain.model.RiskLevel
 
-/**
- * Estado UI para la pantalla de Monitoreo en vivo con métricas procesadas de ventana.
- */
 data class MonitoringUiState(
     val isMonitoring: Boolean = false,
     val appMode: AppMode = AppMode.REAL,

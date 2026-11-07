@@ -21,9 +21,6 @@ import androidx.wear.compose.material3.Button
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
 
-/**
- * Pantalla interactiva para la Prueba de Reacción Táctil y Visual en Wear OS.
- */
 @Composable
 fun ReactionTestScreen(
     uiState: ReactionTestUiState,
@@ -33,8 +30,8 @@ fun ReactionTestScreen(
     modifier: Modifier = Modifier
 ) {
     val backgroundColor = when (uiState.phase) {
-        ReactionTestPhase.STIMULUS_ACTIVE -> Color(0xFF4CAF50) // Verde brillante para pulsar
-        ReactionTestPhase.WAITING_FOR_STIMULUS -> Color(0xFFFF9800) // Naranja de espera
+        ReactionTestPhase.STIMULUS_ACTIVE -> Color(0xFF4CAF50)
+        ReactionTestPhase.WAITING_FOR_STIMULUS -> Color(0xFFFF9800)
         else -> MaterialTheme.colorScheme.background
     }
 

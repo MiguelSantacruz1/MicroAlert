@@ -1,8 +1,5 @@
 package com.microalert.app.domain.model
 
-/**
- * Modelo de dominio para representar una sesión de monitoreo.
- */
 data class MonitoringSession(
     val id: Long = 0,
     val startTimestampMs: Long,

@@ -5,11 +5,6 @@ import com.microalert.app.domain.model.RiskClassificationConfig
 import com.microalert.app.domain.model.RiskLevel
 import com.microalert.app.domain.model.WindowDataQuality
 
-/**
- * Gestor de la política de clasificación de riesgo de somnolencia.
- * Aplica umbrales configurables, filtro de persistencia temporal (consecutive windows)
- * e histéresis para evitar oscilaciones rápidas entre niveles de alerta.
- */
 class RiskPolicyManager(
     val config: RiskClassificationConfig = RiskClassificationConfig()
 ) {
@@ -23,14 +18,12 @@ class RiskPolicyManager(
     ): RiskAssessmentResult {
         val rawLevel = determineRawLevel(probability)
 
-        // 1. Manejo de persistencia temporal para niveles elevados (HIGH y CRITICAL)
         if (rawLevel == RiskLevel.HIGH || rawLevel == RiskLevel.CRITICAL) {
             consecutiveElevatedCount++
         } else {
             consecutiveElevatedCount = 0
         }
 
-        // 2. Determinar nivel propuesto según persistencia
         val proposedLevel = when {
             rawLevel == RiskLevel.CRITICAL -> {
                 if (consecutiveElevatedCount >= config.persistenceWindowsRequired) {
@@ -50,7 +43,6 @@ class RiskPolicyManager(
             else -> RiskLevel.NORMAL
         }
 
-        // 3. Aplicación de Histéresis al descender de nivel
         val finalEffectiveLevel = applyHysteresis(probability, proposedLevel)
         currentEffectiveLevel = finalEffectiveLevel
 
@@ -74,12 +66,11 @@ class RiskPolicyManager(
     }
 
     private fun applyHysteresis(probability: Float, proposedLevel: RiskLevel): RiskLevel {
-        // Solo aplica histéresis si el nivel propuesto es inferior al nivel actual
+
         if (proposedLevel.ordinal >= currentEffectiveLevel.ordinal) {
             return proposedLevel
         }
 
-        // Condición de histéresis para descender de cada nivel
         return when (currentEffectiveLevel) {
             RiskLevel.CRITICAL -> {
                 if (probability < (config.criticalThreshold - config.hysteresisDelta)) {

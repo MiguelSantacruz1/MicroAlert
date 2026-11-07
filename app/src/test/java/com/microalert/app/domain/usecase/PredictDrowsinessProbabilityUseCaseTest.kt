@@ -70,10 +70,10 @@ class PredictDrowsinessProbabilityUseCaseTest {
             accelerometerMagnitude = 9.81f,
             gyroscopeMagnitude = 0.05f,
             inactivityDurationSeconds = 15f,
-            reactionTimeMs = null, // Se imputa
+            reactionTimeMs = null,
             sessionDurationSeconds = 300f,
-            hrvSdnnMs = null, // Se imputa
-            hrvRmssdMs = null // Se imputa
+            hrvSdnnMs = null,
+            hrvRmssdMs = null
         )
 
         val prob = useCase(vectorWithNulls)

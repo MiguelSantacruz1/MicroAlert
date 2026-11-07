@@ -37,10 +37,6 @@ object Screen {
     const val REACTION_TEST = "reaction_test"
 }
 
-/**
- * Grafo de Navegación completo para Wear OS.
- * Obtiene las instancias de ViewModel a través del contenedor AppContainer centralizado.
- */
 @Composable
 fun MicroAlertNavHost(
     factory: ViewModelProvider.Factory = (LocalContext.current.applicationContext as MicroAlertApp).appContainer.provideViewModelFactory(),

@@ -8,9 +8,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-/**
- * ViewModel para gestionar el diagnóstico dinámico de sensores y verificación de permisos.
- */
 class SensorStatusViewModel(
     private val checkSensorAvailabilityUseCase: CheckSensorAvailabilityUseCase? = null,
     private val permissionManager: PermissionManager? = null

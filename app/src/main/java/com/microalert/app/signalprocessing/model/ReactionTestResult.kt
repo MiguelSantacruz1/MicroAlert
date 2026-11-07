@@ -1,8 +1,5 @@
 package com.microalert.app.signalprocessing.model
 
-/**
- * Registro del resultado de una prueba de reacción táctil/visual.
- */
 data class ReactionTestResult(
     val timestampMs: Long = System.currentTimeMillis(),
     val latencyMs: Long?,

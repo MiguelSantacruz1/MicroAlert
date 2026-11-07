@@ -10,9 +10,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-/**
- * Cliente de Wear OS Health Services para obtener métricas fisiológicas avanzadas.
- */
 class HealthServicesManager(context: Context) {
 
     private val healthServicesClient = HealthServices.getClient(context)
@@ -25,7 +22,7 @@ class HealthServicesManager(context: Context) {
 
     private val callback = object : MeasureCallback {
         override fun onAvailabilityChanged(dataType: DeltaDataType<*, *>, availability: androidx.health.services.client.data.Availability) {
-            // Manejo de disponibilidad de salud
+
         }
 
         override fun onDataReceived(data: DataPointContainer) {

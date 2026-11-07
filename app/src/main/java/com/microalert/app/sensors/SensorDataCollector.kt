@@ -12,9 +12,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-/**
- * Colector compuesto que consolida lecturas de los gestores reales (HeartRate, Accelerometer, Gyroscope).
- */
 class SensorDataCollector(context: Context) : SensorDataSource {
 
     private val heartRateManager = HeartRateSensorManager(context)
@@ -56,7 +53,7 @@ class SensorDataCollector(context: Context) : SensorDataSource {
                     )
 
                     _sensorDataStream.value = evaluator.evaluateSample(rawSample)
-                    delay(500L) // Muestreo regular cada 500ms
+                    delay(500L)
                 }
             }
         }

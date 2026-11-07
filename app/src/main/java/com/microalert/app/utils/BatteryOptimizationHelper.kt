@@ -7,10 +7,6 @@ import android.os.Build
 import android.os.PowerManager
 import android.provider.Settings
 
-/**
- * Asistente para verificar el estado de optimización de batería en Wear OS y solicitar
- * exención de Doze/Standby para monitoreo crítico en tiempo real.
- */
 class BatteryOptimizationHelper(private val context: Context) {
 
     fun isIgnoringBatteryOptimizations(): Boolean {

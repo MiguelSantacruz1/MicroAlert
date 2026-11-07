@@ -11,7 +11,7 @@ import java.io.FileInputStream
 class ModelLoaderTest {
 
     private fun createLoader(): AssetModelLoader {
-        // En tests unitarios de Gradle/JVM, los assets se localizan en el path del proyecto
+
         val modelFile = File("src/main/assets/model.json").let {
             if (it.exists()) it else File("app/src/main/assets/model.json")
         }

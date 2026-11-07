@@ -17,9 +17,6 @@ data class AccelData(
     val magnitude: Float = 0f
 )
 
-/**
- * Capturador de datos del acelerómetro triaxial (Sensor.TYPE_ACCELEROMETER).
- */
 class AccelerometerSensorManager(context: Context) : SensorEventListener {
 
     private val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager

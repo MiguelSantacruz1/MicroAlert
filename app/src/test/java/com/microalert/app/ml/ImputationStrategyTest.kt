@@ -16,10 +16,10 @@ class ImputationStrategyTest {
             accelerometerMagnitude = 9.81f,
             gyroscopeMagnitude = 0.05f,
             inactivityDurationSeconds = 12.0f,
-            reactionTimeMs = null, // Debería imputar 357.55
+            reactionTimeMs = null,
             sessionDurationSeconds = 400.0f,
-            hrvSdnnMs = null, // Debería imputar 49.46
-            hrvRmssdMs = null // Debería imputar 44.60
+            hrvSdnnMs = null,
+            hrvRmssdMs = null
         )
 
         val imputed = strategy.imputeVector(rawVector)
@@ -29,10 +29,10 @@ class ImputationStrategyTest {
         assertEquals(9.81f, imputed[1], 1e-4f)
         assertEquals(0.05f, imputed[2], 1e-4f)
         assertEquals(12.0f, imputed[3], 1e-4f)
-        assertEquals(357.55f, imputed[4], 1e-4f) // Imputado
+        assertEquals(357.55f, imputed[4], 1e-4f)
         assertEquals(400.0f, imputed[5], 1e-4f)
-        assertEquals(49.46f, imputed[6], 1e-4f)  // Imputado
-        assertEquals(44.60f, imputed[7], 1e-4f)  // Imputado
+        assertEquals(49.46f, imputed[6], 1e-4f)
+        assertEquals(44.60f, imputed[7], 1e-4f)
     }
 
     @Test

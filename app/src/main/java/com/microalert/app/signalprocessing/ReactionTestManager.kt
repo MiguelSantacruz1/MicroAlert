@@ -2,12 +2,8 @@ package com.microalert.app.signalprocessing
 
 import com.microalert.app.signalprocessing.model.ReactionTestResult
 
-/**
- * Gestor de la prueba de reacción.
- * Controla la frecuencia de ejecución y la política de caducidad del último valor (máximo 15 minutos de antigüedad).
- */
 class ReactionTestManager(
-    val maxValidityDurationMs: Long = 15 * 60 * 1000L // 15 minutos
+    val maxValidityDurationMs: Long = 15 * 60 * 1000L
 ) {
     private var lastResult: ReactionTestResult? = null
 
@@ -21,7 +17,7 @@ class ReactionTestManager(
 
         val age = System.currentTimeMillis() - current.timestampMs
         if (age > maxValidityDurationMs) {
-            return null // El resultado ha caducado
+            return null
         }
 
         return current.latencyMs.toFloat()

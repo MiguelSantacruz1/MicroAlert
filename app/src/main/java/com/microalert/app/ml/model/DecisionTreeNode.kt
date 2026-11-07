@@ -2,10 +2,6 @@ package com.microalert.app.ml.model
 
 import com.google.gson.annotations.SerializedName
 
-/**
- * Representa un nodo individual en un árbol de decisión exportado.
- * Si leftChild == -1 y rightChild == -1, es un nodo hoja con probabilidad 'value'.
- */
 data class DecisionTreeNode(
     @SerializedName("node_id")
     val nodeId: Int,

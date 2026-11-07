@@ -5,9 +5,6 @@ import com.microalert.app.signalprocessing.FeatureVectorExtractor
 import com.microalert.app.signalprocessing.ReactionTestManager
 import com.microalert.app.signalprocessing.model.ProcessedWindowData
 
-/**
- * Caso de uso para consolidar el Vector de 8 Características listo para la inferencia de ML.
- */
 class ExtractFeatureVectorUseCase(
     private val extractor: FeatureVectorExtractor,
     private val reactionTestManager: ReactionTestManager

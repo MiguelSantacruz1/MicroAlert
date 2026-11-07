@@ -6,10 +6,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
-/**
- * Pipeline unificado de procesamiento de señales en tiempo real.
- * Recibe muestras de sensores y emite objetos ProcessedWindowData cuando se completa cada ventana de 30s.
- */
 class SignalProcessingPipeline(
     windowDurationMs: Long = 60_000L,
     windowStepMs: Long = 30_000L

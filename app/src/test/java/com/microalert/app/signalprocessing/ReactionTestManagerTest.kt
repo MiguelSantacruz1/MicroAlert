@@ -39,8 +39,8 @@ class ReactionTestManagerTest {
 
     @Test
     fun `expired reaction result older than max validity should return null`() {
-        val manager = ReactionTestManager(maxValidityDurationMs = 60_000L) // 1 minuto
-        val oldTimestamp = System.currentTimeMillis() - 120_000L // 2 minutos atrás
+        val manager = ReactionTestManager(maxValidityDurationMs = 60_000L)
+        val oldTimestamp = System.currentTimeMillis() - 120_000L
         val result = ReactionTestResult(
             timestampMs = oldTimestamp,
             latencyMs = 280L,

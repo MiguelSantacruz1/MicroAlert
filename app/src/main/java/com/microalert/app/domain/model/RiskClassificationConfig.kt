@@ -1,9 +1,5 @@
 package com.microalert.app.domain.model
 
-/**
- * Parámetros configurables de la política de clasificación de riesgo de somnolencia.
- * Permite ajustar umbrales de probabilidad, persistencia temporal e histéresis.
- */
 data class RiskClassificationConfig(
     val precautionThreshold: Float = 0.30f,
     val highThreshold: Float = 0.60f,

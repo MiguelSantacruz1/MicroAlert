@@ -103,7 +103,6 @@ class EndToEndMonitoringIntegrationTest {
         assertTrue(viewModel.uiState.value.isMonitoring)
         assertEquals(AppMode.DEMO, viewModel.uiState.value.appMode)
 
-        // Simular flujo continuo de muestras de sensor
         fakeSensorRepository.emitSample(
             SensorSample(timestampMs = 1000L, heartRateBpm = 75f, accelMagnitude = 9.81f, gyroMagnitude = 0.05f)
         )
@@ -113,16 +112,13 @@ class EndToEndMonitoringIntegrationTest {
 
         testScheduler.runCurrent()
 
-        // Verificar que las muestras se procesaron
         val currentState = viewModel.uiState.value
         assertEquals(72f, currentState.heartRateBpm, 0.1f)
         assertEquals(9.80f, currentState.accelerometerMagnitude, 0.05f)
 
-        // Detener sesión
         viewModel.stopMonitoring()
         testScheduler.runCurrent()
 
-        // Verificar persistencia en repositorio Room
         val savedSessions = fakeSessionHistoryRepository.getAllSessions().first()
         assertEquals(1, savedSessions.size)
         val session = savedSessions.first()

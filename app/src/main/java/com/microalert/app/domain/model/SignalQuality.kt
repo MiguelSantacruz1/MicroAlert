@@ -1,8 +1,5 @@
 package com.microalert.app.domain.model
 
-/**
- * Indicadores cuantitativos de calidad de señal biométrica e inercial.
- */
 enum class SignalQualityLevel(val label: String) {
     EXCELLENT("Excelente"),
     ACCEPTABLE("Aceptable"),

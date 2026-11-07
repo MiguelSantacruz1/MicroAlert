@@ -20,9 +20,6 @@ import androidx.wear.compose.material3.ButtonDefaults
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
 
-/**
- * Pantalla ALERT de alto impacto visual y háptico para notificar somnolencia.
- */
 @Composable
 fun AlertScreen(
     uiState: AlertUiState,

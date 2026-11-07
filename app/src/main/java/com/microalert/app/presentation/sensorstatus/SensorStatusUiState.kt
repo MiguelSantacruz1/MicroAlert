@@ -1,8 +1,5 @@
 package com.microalert.app.presentation.sensorstatus
 
-/**
- * Estado UI de la pantalla Sensor Status.
- */
 data class SensorStatusUiState(
     val isHeartRateAvailable: Boolean = true,
     val isAccelerometerAvailable: Boolean = true,

@@ -1,8 +1,5 @@
 package com.microalert.app.sensors.model
 
-/**
- * Representa una muestra individual capturada por los sensores del smartwatch.
- */
 data class SensorSample(
     val timestampMs: Long = System.currentTimeMillis(),
     val heartRateBpm: Float? = null,

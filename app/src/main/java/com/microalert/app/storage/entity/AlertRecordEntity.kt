@@ -5,9 +5,6 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
-/**
- * Entidad Room para registrar un evento de alerta emitido durante una sesión.
- */
 @Entity(
     tableName = "alert_records",
     foreignKeys = [

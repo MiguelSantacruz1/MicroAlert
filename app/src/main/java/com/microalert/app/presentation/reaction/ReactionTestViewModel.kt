@@ -13,9 +13,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
-/**
- * ViewModel para gestionar el ciclo de vida y medición de latencia en la prueba de reacción.
- */
 class ReactionTestViewModel(
     private val reactionTestManager: ReactionTestManager? = null
 ) : ViewModel() {
@@ -36,7 +33,6 @@ class ReactionTestViewModel(
             stimulusStartTimeMs = System.currentTimeMillis()
             _uiState.update { it.copy(phase = ReactionTestPhase.STIMULUS_ACTIVE, message = "¡PRESIONE AHORA!") }
 
-            // Límite de tiempo máximo para responder (timeout de 5 segundos)
             delay(5000L)
             if (_uiState.value.phase == ReactionTestPhase.STIMULUS_ACTIVE) {
                 reactionTestManager?.recordResult(

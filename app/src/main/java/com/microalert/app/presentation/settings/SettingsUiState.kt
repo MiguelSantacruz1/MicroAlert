@@ -2,9 +2,6 @@ package com.microalert.app.presentation.settings
 
 import com.microalert.app.domain.model.AppMode
 
-/**
- * Estado UI para la pantalla SETTINGS.
- */
 data class SettingsUiState(
     val appMode: AppMode = AppMode.REAL,
     val isVibrationEnabled: Boolean = true,
