@@ -2,96 +2,86 @@ package com.microalert.app.presentation.settings
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
-import androidx.wear.compose.material3.MaterialTheme
-import androidx.wear.compose.material3.Text
-import com.microalert.app.domain.model.AppMode
-import com.microalert.app.presentation.components.StatusChip
+import com.microalert.app.presentation.theme.GhostButton
+import com.microalert.app.presentation.theme.Neon
+import com.microalert.app.presentation.theme.NeonBackdrop
+import com.microalert.app.presentation.theme.NeonRow
+import com.microalert.app.presentation.theme.NeonTitle
 
 @Composable
 fun SettingsScreen(
     uiState: SettingsUiState,
-    onToggleAppMode: () -> Unit,
     onToggleVibration: () -> Unit,
-    onToggleReactionTest: () -> Unit,
-    onCycleCooldown: () -> Unit = {},
-    onClearAllData: () -> Unit = {},
+    onCycleCooldown: () -> Unit,
+    onOpenReactionTest: () -> Unit,
+    onClearAllData: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    ScalingLazyColumn(
-        modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(6.dp)
-    ) {
-        item {
-            Text(
-                text = "CONFIGURACIÓN",
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
-            )
-        }
+    var confirmClear by remember { mutableStateOf(false) }
 
-        item {
-            StatusChip(
-                label = "Modo de Uso",
-                statusText = uiState.appMode.title,
-                statusColor = if (uiState.appMode == AppMode.REAL) Color(0xFF4CAF50) else Color(0xFFFF9800),
-                onClick = onToggleAppMode
-            )
-        }
+    NeonBackdrop(accent = Neon.Magenta, modifier = modifier) {
+        ScalingLazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(horizontal = 14.dp, vertical = 28.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(7.dp)
+        ) {
+            item { NeonTitle("AJUSTES", accent = Neon.Magenta) }
 
-        item {
-            StatusChip(
-                label = "Vibración Alertas",
-                statusText = if (uiState.isVibrationEnabled) "Activada" else "Desactivada",
-                statusColor = if (uiState.isVibrationEnabled) Color(0xFF4CAF50) else Color(0xFFF44336),
-                onClick = onToggleVibration
-            )
-        }
+            item {
+                NeonRow(
+                    label = "Vibración",
+                    value = if (uiState.isVibrationEnabled) "ON" else "OFF",
+                    accent = if (uiState.isVibrationEnabled) Neon.Lime else Neon.Red,
+                    onClick = onToggleVibration
+                )
+            }
 
-        item {
-            StatusChip(
-                label = "Enfriamiento Alerta",
-                statusText = "${uiState.vibrationCooldownSeconds}s",
-                statusColor = MaterialTheme.colorScheme.primary,
-                onClick = onCycleCooldown
-            )
-        }
+            item {
+                NeonRow(
+                    label = "Entre alertas",
+                    value = "${uiState.vibrationCooldownSeconds}s",
+                    accent = Neon.Cyan,
+                    onClick = onCycleCooldown
+                )
+            }
 
-        item {
-            StatusChip(
-                label = "Prueba de Reacción",
-                statusText = if (uiState.isReactionTestEnabled) "Cada ${uiState.reactionTestIntervalMinutes}m" else "Desactivada",
-                statusColor = if (uiState.isReactionTestEnabled) MaterialTheme.colorScheme.primary else Color(0xFFFF9800),
-                onClick = onToggleReactionTest
-            )
-        }
+            item {
+                NeonRow(
+                    label = "Prueba de reacción",
+                    value = "ABRIR",
+                    accent = Neon.Violet,
+                    onClick = onOpenReactionTest
+                )
+            }
 
-        item {
-            StatusChip(
-                label = "Ventana Temporal",
-                statusText = "${uiState.windowSizeSeconds}s / ${uiState.windowStepSeconds}s",
-                statusColor = MaterialTheme.colorScheme.onSurface,
-                onClick = {}
-            )
-        }
-
-        item {
-            StatusChip(
-                label = "Privacidad",
-                statusText = "Borrar datos locales",
-                statusColor = MaterialTheme.colorScheme.error,
-                onClick = onClearAllData
-            )
+            item {
+                Spacer(Modifier.height(4.dp))
+                GhostButton(
+                    text = if (confirmClear) "¿SEGURO? TOCA DE NUEVO" else "BORRAR DATOS",
+                    onClick = {
+                        if (confirmClear) {
+                            confirmClear = false
+                            onClearAllData()
+                        } else {
+                            confirmClear = true
+                        }
+                    },
+                    accent = Neon.Red
+                )
+            }
         }
     }
 }

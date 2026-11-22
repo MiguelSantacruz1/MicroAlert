@@ -178,9 +178,15 @@ class EndToEndMonitoringIntegrationTest {
         override fun getAllSessions(): Flow<List<MonitoringSession>> = flow
 
         override suspend fun saveSession(session: MonitoringSession): Long {
-            sessions.add(session)
+            val existingIndex = sessions.indexOfFirst { it.id == session.id && session.id > 0 }
+            if (existingIndex >= 0) {
+                sessions[existingIndex] = session
+            } else {
+                val newId = if (session.id > 0) session.id else (sessions.size + 1).toLong()
+                sessions.add(session.copy(id = newId))
+            }
             flow.value = sessions.toList()
-            return session.id
+            return session.id.takeIf { it > 0 } ?: sessions.size.toLong()
         }
 
         override suspend fun recordAlertForSession(sessionId: Long, alert: AlertEvent): Long = 1L

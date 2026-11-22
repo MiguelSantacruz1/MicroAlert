@@ -10,17 +10,23 @@ import kotlinx.coroutines.flow.update
 
 class SensorStatusViewModel(
     private val checkSensorAvailabilityUseCase: CheckSensorAvailabilityUseCase? = null,
-    private val permissionManager: PermissionManager? = null
+    private val permissionManager: PermissionManager? = null,
+    private val sensorRepository: com.microalert.app.data.repository.SensorRepository? = null
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SensorStatusUiState())
     val uiState: StateFlow<SensorStatusUiState> = _uiState.asStateFlow()
 
+    init {
+        refreshStatus()
+    }
+
     fun refreshStatus() {
         checkSensorAvailabilityUseCase?.let { useCase ->
             val availability = useCase()
-            val hasBodySensors = permissionManager?.hasBodySensorsPermission() ?: false
-            val hasActivityRec = permissionManager?.hasActivityRecognitionPermission() ?: false
+            val isDemo = sensorRepository?.currentMode() == com.microalert.app.domain.model.AppMode.DEMO
+            val hasBodySensors = isDemo || (permissionManager?.hasBodySensorsPermission() ?: false)
+            val hasActivityRec = isDemo || (permissionManager?.hasActivityRecognitionPermission() ?: false)
 
             _uiState.update { current ->
                 current.copy(

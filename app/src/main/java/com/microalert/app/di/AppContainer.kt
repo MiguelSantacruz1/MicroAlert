@@ -30,7 +30,9 @@ import com.microalert.app.presentation.monitoring.MonitoringViewModel
 import com.microalert.app.presentation.reaction.ReactionTestViewModel
 import com.microalert.app.presentation.sensorstatus.SensorStatusViewModel
 import com.microalert.app.presentation.settings.SettingsViewModel
+import com.microalert.app.sensors.PermissionManager
 import com.microalert.app.storage.MicroAlertDatabase
+import com.microalert.app.presentation.settings.SettingsStore
 import com.microalert.app.utils.HapticFeedbackManager
 
 class AppContainer(private val context: Context) {
@@ -53,6 +55,14 @@ class AppContainer(private val context: Context) {
 
     val sensorRepository: SensorRepository by lazy {
         SensorRepositoryImpl(context)
+    }
+
+    val permissionManager: PermissionManager by lazy {
+        PermissionManager(context)
+    }
+
+    val settingsStore: SettingsStore by lazy {
+        SettingsStore(context)
     }
 
     val hapticFeedbackManager: HapticFeedbackManager by lazy {
@@ -124,7 +134,7 @@ class AppContainer(private val context: Context) {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return when {
                 modelClass.isAssignableFrom(HomeViewModel::class.java) -> {
-                    HomeViewModel() as T
+                    HomeViewModel(checkSensorAvailabilityUseCase, sensorRepository, settingsStore) as T
                 }
                 modelClass.isAssignableFrom(MonitoringViewModel::class.java) -> {
                     MonitoringViewModel(
@@ -134,23 +144,24 @@ class AppContainer(private val context: Context) {
                         evaluateRiskUseCase = evaluateRiskUseCase,
                         manageAlertsUseCase = manageAlertsUseCase,
                         saveSessionUseCase = saveSessionUseCase,
-                        sessionHistoryRepository = sessionHistoryRepository
+                        sessionHistoryRepository = sessionHistoryRepository,
+                        reactionTestManager = reactionTestManager
                     ) as T
                 }
                 modelClass.isAssignableFrom(AlertViewModel::class.java) -> {
                     AlertViewModel(manageAlertsUseCase) as T
                 }
                 modelClass.isAssignableFrom(SessionHistoryViewModel::class.java) -> {
-                    SessionHistoryViewModel(getSessionHistoryUseCase, clearHistoryUseCase) as T
+                    SessionHistoryViewModel(getSessionHistoryUseCase, clearHistoryUseCase, saveSessionUseCase) as T
                 }
                 modelClass.isAssignableFrom(SettingsViewModel::class.java) -> {
-                    SettingsViewModel(clearHistoryUseCase) as T
+                    SettingsViewModel(clearHistoryUseCase, alertManager, settingsStore) as T
                 }
                 modelClass.isAssignableFrom(SensorStatusViewModel::class.java) -> {
-                    SensorStatusViewModel(checkSensorAvailabilityUseCase) as T
+                    SensorStatusViewModel(checkSensorAvailabilityUseCase, permissionManager, sensorRepository) as T
                 }
                 modelClass.isAssignableFrom(ReactionTestViewModel::class.java) -> {
-                    ReactionTestViewModel() as T
+                    ReactionTestViewModel(reactionTestManager) as T
                 }
                 else -> throw IllegalArgumentException("ViewModel no reconocido: ${modelClass.name}")
             }

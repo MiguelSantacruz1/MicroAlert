@@ -8,6 +8,8 @@ interface SensorRepository {
     fun getSensorDataStream(): Flow<SensorSample>
     fun startMonitoring(appMode: AppMode)
     fun stopMonitoring()
+    fun selectMode(appMode: AppMode) {}
+    fun currentMode(): AppMode = AppMode.REAL
     fun isHeartRateAvailable(): Boolean
     fun isAccelerometerAvailable(): Boolean
     fun isGyroscopeAvailable(): Boolean

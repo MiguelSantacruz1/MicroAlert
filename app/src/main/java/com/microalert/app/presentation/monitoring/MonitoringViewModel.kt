@@ -12,7 +12,11 @@ import com.microalert.app.domain.usecase.EvaluateRiskUseCase
 import com.microalert.app.domain.usecase.ExtractFeatureVectorUseCase
 import com.microalert.app.domain.usecase.ManageAlertsUseCase
 import com.microalert.app.domain.usecase.SaveSessionUseCase
+import com.microalert.app.sensors.DemoLevel
+import com.microalert.app.sensors.DemoScenario
+import com.microalert.app.signalprocessing.ReactionTestManager
 import com.microalert.app.signalprocessing.SignalProcessingPipeline
+import com.microalert.app.signalprocessing.model.ReactionTestResult
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -31,7 +35,8 @@ class MonitoringViewModel(
     private val evaluateRiskUseCase: EvaluateRiskUseCase? = null,
     private val manageAlertsUseCase: ManageAlertsUseCase? = null,
     private val saveSessionUseCase: SaveSessionUseCase? = null,
-    private val sessionHistoryRepository: SessionHistoryRepository? = null
+    private val sessionHistoryRepository: SessionHistoryRepository? = null,
+    private val reactionTestManager: ReactionTestManager? = null
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MonitoringUiState())
@@ -60,7 +65,29 @@ class MonitoringViewModel(
         sumHeartRate = 0f
         countHeartRateSamples = 0
         evaluateRiskUseCase?.reset()
+        manageAlertsUseCase?.reset()
+        signalProcessingPipeline?.restoreDefaults()
+        if (mode == AppMode.DEMO) {
+            signalProcessingPipeline?.configure(DemoScenario.WINDOW_MS, DemoScenario.STEP_MS)
+            DemoScenario.start()
+        }
         signalProcessingPipeline?.reset()
+
+        val initialSession = MonitoringSession(
+            id = 0L,
+            startTimestampMs = sessionStartTimestampMs,
+            endTimestampMs = sessionStartTimestampMs,
+            durationSeconds = 0L,
+            appMode = mode,
+            maxRiskLevel = RiskLevel.NORMAL,
+            alertsTriggeredCount = 0,
+            avgHeartRateBpm = null,
+            processedWindowsCount = 0
+        )
+
+        viewModelScope.launch {
+            activeSessionId = saveSessionUseCase?.invoke(initialSession) ?: 0L
+        }
 
         _uiState.update {
             it.copy(
@@ -68,6 +95,7 @@ class MonitoringViewModel(
                 appMode = mode,
                 sessionDurationSeconds = 0L,
                 windowCountProcessed = 0,
+                demoLevel = DemoLevel.AUTO,
                 currentRiskLevel = RiskLevel.NORMAL
             )
         }
@@ -93,6 +121,7 @@ class MonitoringViewModel(
                     _uiState.update { current ->
                         current.copy(
                             heartRateBpm = sample.heartRateBpm ?: current.heartRateBpm,
+                            heartRateValid = sample.heartRateBpm != null,
                             accelerometerMagnitude = sample.accelMagnitude,
                             gyroscopeMagnitude = sample.gyroMagnitude
                         )
@@ -105,8 +134,24 @@ class MonitoringViewModel(
 
         signalProcessingPipeline?.let { pipeline ->
             windowJob = viewModelScope.launch {
-                pipeline.windowStream.collect { windowData ->
-                    val sessionDurationSec = ((System.currentTimeMillis() - sessionStartTimestampMs) / 1000f).coerceAtLeast(1f)
+                pipeline.windowStream.collect { rawWindow ->
+                    val elapsedMs = System.currentTimeMillis() - sessionStartTimestampMs
+                    var sessionDurationSec = (elapsedMs / 1000f).coerceAtLeast(1f)
+                    var windowData = rawWindow
+                    if (_uiState.value.appMode == AppMode.DEMO) {
+                        val fatigue = DemoScenario.current
+                        sessionDurationSec = DemoScenario.sessionSeconds(fatigue)
+                        windowData = rawWindow.copy(
+                            inactivitySeconds = (rawWindow.inactivitySeconds * DemoScenario.INACTIVITY_SCALE).toLong()
+                        )
+                        reactionTestManager?.recordResult(
+                            ReactionTestResult(
+                                latencyMs = DemoScenario.reactionTimeMs(fatigue),
+                                isSuccessful = true,
+                                isTimedOut = false
+                            )
+                        )
+                    }
 
                     val featureVector = extractFeatureVectorUseCase?.invoke(
                         windowData = windowData,
@@ -152,6 +197,19 @@ class MonitoringViewModel(
         }
     }
 
+    fun setDemoLevel(level: DemoLevel) {
+        DemoScenario.level = level
+        if (level == DemoLevel.NORMAL) {
+            DemoScenario.current = 0f
+            signalProcessingPipeline?.reset()
+            evaluateRiskUseCase?.reset()
+            manageAlertsUseCase?.reset()
+            _uiState.update { it.copy(demoLevel = level, currentRiskLevel = RiskLevel.NORMAL) }
+        } else {
+            _uiState.update { it.copy(demoLevel = level) }
+        }
+    }
+
     fun stopMonitoring() {
         if (!_uiState.value.isMonitoring) return
 
@@ -175,7 +233,7 @@ class MonitoringViewModel(
         } else null
 
         val finalSession = MonitoringSession(
-            id = 0L,
+            id = activeSessionId,
             startTimestampMs = sessionStartTimestampMs,
             endTimestampMs = endTimestampMs,
             durationSeconds = durationSeconds,

@@ -54,7 +54,7 @@ El modelo Random Forest evalúa ventanas temporales continuas utilizando un vect
 ## Modos de Funcionamiento
 
 - **Modo REAL:** Captura directa de sensores de hardware y procesamiento en vivo.
-- **Modo DEMO:** Simulación interactiva de patrones fisiológicos y prueba de niveles de riesgo.
+- **Modo DEMO:** Simulación sin sensores físicos, pensada para emulador. Arranca por defecto. En la pantalla de Monitoreo hay botones de escenario (AUTO, NORMAL, PRECAUCIÓN, ALTO, CRÍTICO) para forzar el nivel de riesgo en pocos segundos. Los permisos de sensores solo se piden en modo REAL.
 
 ---
 

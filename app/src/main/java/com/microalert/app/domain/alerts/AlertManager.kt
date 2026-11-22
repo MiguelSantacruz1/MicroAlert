@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.asStateFlow
 
 class AlertManager(
     private val hapticFeedbackManager: HapticFeedbackManager? = null,
-    val config: AlertPolicyConfig = AlertPolicyConfig()
+    var config: AlertPolicyConfig = AlertPolicyConfig()
 ) {
     private val _activeAlert = MutableStateFlow<AlertEvent?>(null)
     val activeAlert: StateFlow<AlertEvent?> = _activeAlert.asStateFlow()

@@ -1,12 +1,10 @@
 package com.microalert.app.presentation.home
 
 import com.microalert.app.domain.model.AppMode
-import com.microalert.app.domain.model.RiskLevel
 
 data class HomeUiState(
-    val appMode: AppMode = AppMode.REAL,
+    val appMode: AppMode = AppMode.DEMO,
     val isMonitoringActive: Boolean = false,
-    val currentRiskLevel: RiskLevel = RiskLevel.NORMAL,
-    val activeSensorsCount: Int = 3,
+    val activeSensorsCount: Int = 0,
     val totalSensorsCount: Int = 4
 )

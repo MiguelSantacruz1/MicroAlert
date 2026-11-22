@@ -8,10 +8,18 @@ import androidx.core.content.ContextCompat
 
 class PermissionManager(private val context: Context) {
 
+    companion object {
+        const val READ_HEART_RATE = "android.permission.health.READ_HEART_RATE"
+    }
+
+    fun heartRatePermission(): String {
+        return if (Build.VERSION.SDK_INT >= 36) READ_HEART_RATE else Manifest.permission.BODY_SENSORS
+    }
+
     fun hasBodySensorsPermission(): Boolean {
         return ContextCompat.checkSelfPermission(
             context,
-            Manifest.permission.BODY_SENSORS
+            heartRatePermission()
         ) == PackageManager.PERMISSION_GRANTED
     }
 
@@ -35,7 +43,7 @@ class PermissionManager(private val context: Context) {
 
     fun getRequiredPermissions(): List<String> {
         val permissions = mutableListOf(
-            Manifest.permission.BODY_SENSORS,
+            heartRatePermission(),
             Manifest.permission.ACTIVITY_RECOGNITION
         )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

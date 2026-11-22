@@ -29,6 +29,14 @@ object Formatters {
         }
     }
 
+    fun formatClock(totalSeconds: Long): String {
+        val h = totalSeconds / 3600
+        val m = (totalSeconds % 3600) / 60
+        val s = totalSeconds % 60
+        return if (h > 0) String.format(Locale.US, "%d:%02d:%02d", h, m, s)
+        else String.format(Locale.US, "%02d:%02d", m, s)
+    }
+
     fun formatHeartRate(bpm: Float?): String {
         return if (bpm != null && bpm > 0) "${bpm.toInt()} BPM" else "N/D"
     }

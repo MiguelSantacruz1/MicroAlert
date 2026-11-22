@@ -11,10 +11,6 @@ data class SessionHistoryItem(
 )
 
 data class HistoryUiState(
-    val sessions: List<SessionHistoryItem> = listOf(
-        SessionHistoryItem(1, "Hoy, 10:15 AM", "45 min", RiskLevel.NORMAL, 0),
-        SessionHistoryItem(2, "Ayer, 03:20 PM", "60 min", RiskLevel.PRECAUTION, 1),
-        SessionHistoryItem(3, "28 Feb, 11:00 PM", "90 min", RiskLevel.HIGH, 3)
-    ),
-    val isLoading: Boolean = false
+    val sessions: List<SessionHistoryItem> = emptyList(),
+    val isLoading: Boolean = true
 )

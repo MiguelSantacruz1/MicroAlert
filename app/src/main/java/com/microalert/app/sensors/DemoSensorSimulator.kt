@@ -12,6 +12,54 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
+enum class DemoLevel(val label: String, val target: Float?) {
+    AUTO("AUTO", null),
+    NORMAL("NORMAL", 0f),
+    PRECAUTION("PRECAUCIÓN", 0.33f),
+    HIGH("ALTO", 0.42f),
+    CRITICAL("CRÍTICO", 1f)
+}
+
+object DemoScenario {
+    const val CALM_MS = 15_000L
+    const val RAMP_MS = 45_000L
+    const val HOLD_MS = 45_000L
+    const val CYCLE_MS = CALM_MS + RAMP_MS + HOLD_MS
+    const val WINDOW_MS = 12_000L
+    const val STEP_MS = 4_000L
+    const val INACTIVITY_SCALE = 60_000f / WINDOW_MS
+    private const val MAX_STEP_PER_TICK = 0.08f
+
+    @Volatile var level: DemoLevel = DemoLevel.AUTO
+    @Volatile var current: Float = 0f
+    @Volatile private var startMs: Long = 0L
+
+    fun start(now: Long = System.currentTimeMillis()) {
+        startMs = now
+        current = 0f
+        level = DemoLevel.AUTO
+    }
+
+    fun fatigueAt(elapsedMs: Long): Float {
+        val t = elapsedMs % CYCLE_MS
+        return when {
+            t < CALM_MS -> 0f
+            t < CALM_MS + RAMP_MS -> (t - CALM_MS).toFloat() / RAMP_MS
+            else -> 1f
+        }
+    }
+
+    fun tick(now: Long = System.currentTimeMillis()): Float {
+        val target = level.target ?: fatigueAt(now - startMs)
+        current += (target - current).coerceIn(-MAX_STEP_PER_TICK, MAX_STEP_PER_TICK)
+        return current
+    }
+
+    fun reactionTimeMs(fatigue: Float): Long = (300 + 400 * fatigue).toLong()
+
+    fun sessionSeconds(fatigue: Float): Float = 60f + 1440f * fatigue
+}
+
 class DemoSensorSimulator : SensorDataSource {
 
     private val _sensorDataStream = MutableStateFlow(SensorSample())
@@ -21,34 +69,38 @@ class DemoSensorSimulator : SensorDataSource {
     private val scope = CoroutineScope(Dispatchers.Default)
 
     override fun startSampling() {
-        if (simulationJob == null || simulationJob?.isCancelled == true) {
-            simulationJob = scope.launch {
-                var baseBpm = 70.0f
-                while (isActive) {
-                    baseBpm += Random.nextFloat() * 2f - 1f
-                    baseBpm = baseBpm.coerceIn(55f, 95f)
+        if (simulationJob?.isActive == true) return
+        simulationJob = scope.launch {
+            while (isActive) {
+                val now = System.currentTimeMillis()
+                val fatigue = DemoScenario.tick(now)
 
-                    val accelMag = 9.81f + (Random.nextFloat() * 0.4f - 0.2f)
-                    val gyroMag = (Random.nextFloat() * 0.08f).coerceAtLeast(0.01f)
+                val bpm = 74f - 18f * fatigue + (Random.nextFloat() * 2f - 1f)
+                val motion = 1.6f * (1f - fatigue) + 0.05f
+                val accelMag = 9.81f + (Random.nextFloat() * 2f - 1f) * motion
+                val gyroMag = (0.01f + Random.nextFloat() * 0.06f * (1f - fatigue)).coerceAtLeast(0.005f)
 
-                    _sensorDataStream.value = SensorSample(
-                        timestampMs = System.currentTimeMillis(),
-                        heartRateBpm = baseBpm,
-                        rIntervalsMs = listOf(820f, 835f, 810f, 825f),
-                        accelX = 0.1f,
-                        accelY = 9.8f,
-                        accelZ = 0.2f,
-                        accelMagnitude = accelMag,
-                        gyroX = 0.01f,
-                        gyroY = 0.02f,
-                        gyroZ = 0.01f,
-                        gyroMagnitude = gyroMag,
-                        isHeartRateValid = true,
-                        isAccelValid = true,
-                        isGyroValid = true
-                    )
-                    delay(1000L)
-                }
+                val baseRr = 60_000f / bpm
+                val spread = 25f + 105f * fatigue
+                val rr = List(4) { baseRr + (Random.nextFloat() * 2f - 1f) * spread }
+
+                _sensorDataStream.value = SensorSample(
+                    timestampMs = now,
+                    heartRateBpm = bpm,
+                    rIntervalsMs = rr,
+                    accelX = 0.1f,
+                    accelY = 9.8f,
+                    accelZ = 0.2f,
+                    accelMagnitude = accelMag,
+                    gyroX = 0.01f,
+                    gyroY = 0.02f,
+                    gyroZ = 0.01f,
+                    gyroMagnitude = gyroMag,
+                    isHeartRateValid = true,
+                    isAccelValid = true,
+                    isGyroValid = true
+                )
+                delay(500L)
             }
         }
     }

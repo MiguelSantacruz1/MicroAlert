@@ -11,6 +11,7 @@ import androidx.wear.compose.navigation.SwipeDismissableNavHost
 import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
 import com.microalert.app.MicroAlertApp
+import com.microalert.app.domain.model.AppMode
 import com.microalert.app.presentation.alert.AlertScreen
 import com.microalert.app.presentation.alert.AlertViewModel
 import com.microalert.app.presentation.history.SessionHistoryScreen
@@ -39,6 +40,8 @@ object Screen {
 
 @Composable
 fun MicroAlertNavHost(
+    permissionsVersion: Int = 0,
+    onRequestPermissions: () -> Unit = {},
     factory: ViewModelProvider.Factory = (LocalContext.current.applicationContext as MicroAlertApp).appContainer.provideViewModelFactory(),
     homeViewModel: HomeViewModel = viewModel(factory = factory),
     monitoringViewModel: MonitoringViewModel = viewModel(factory = factory),
@@ -57,11 +60,17 @@ fun MicroAlertNavHost(
     val settingsUiState by settingsViewModel.uiState.collectAsState()
     val sensorStatusUiState by sensorStatusViewModel.uiState.collectAsState()
     val context = LocalContext.current
+    val permissionManager = (context.applicationContext as MicroAlertApp).appContainer.permissionManager
+
+    LaunchedEffect(permissionsVersion) {
+        homeViewModel.refreshSensors()
+        sensorStatusViewModel.refreshStatus()
+    }
 
     LaunchedEffect(monitoringViewModel) {
         monitoringViewModel.alertNavigationEvents.collect { alertEvent ->
             alertViewModel.onAlertTriggered(alertEvent)
-            navController.navigate(Screen.ALERT)
+            navController.navigate(Screen.ALERT) { launchSingleTop = true }
         }
     }
 
@@ -71,19 +80,28 @@ fun MicroAlertNavHost(
     ) {
         composable(Screen.HOME) {
             HomeScreen(
-                uiState = homeUiState,
+                uiState = homeUiState.copy(isMonitoringActive = monitoringUiState.isMonitoring),
                 onStartMonitoringClick = {
-                    homeViewModel.toggleMonitoring()
-                    monitoringViewModel.startMonitoring(homeUiState.appMode)
-                    MonitoringForegroundService.startService(context)
-                    navController.navigate(Screen.MONITORING)
+                    when {
+                        monitoringUiState.isMonitoring -> navController.navigate(Screen.MONITORING)
+                        homeUiState.appMode == AppMode.REAL && !permissionManager.hasBodySensorsPermission() -> {
+                            onRequestPermissions()
+                        }
+                        else -> {
+                            monitoringViewModel.startMonitoring(homeUiState.appMode)
+                            MonitoringForegroundService.startService(context)
+                            navController.navigate(Screen.MONITORING)
+                        }
+                    }
                 },
                 onNavigateToHistory = { navController.navigate(Screen.HISTORY) },
                 onNavigateToSettings = { navController.navigate(Screen.SETTINGS) },
-                onNavigateToSensorStatus = { navController.navigate(Screen.SENSOR_STATUS) },
+                onNavigateToSensorStatus = {
+                    sensorStatusViewModel.refreshStatus()
+                    navController.navigate(Screen.SENSOR_STATUS)
+                },
                 onToggleAppMode = {
-                    homeViewModel.toggleAppMode()
-                    settingsViewModel.toggleAppMode()
+                    if (!monitoringUiState.isMonitoring) homeViewModel.toggleAppMode()
                 }
             )
         }
@@ -91,11 +109,11 @@ fun MicroAlertNavHost(
         composable(Screen.MONITORING) {
             MonitoringScreen(
                 uiState = monitoringUiState,
+                onDemoLevel = { monitoringViewModel.setDemoLevel(it) },
                 onStopMonitoringClick = {
-                    homeViewModel.toggleMonitoring()
                     monitoringViewModel.stopMonitoring()
                     MonitoringForegroundService.stopService(context)
-                    navController.popBackStack()
+                    navController.popBackStack(Screen.HOME, inclusive = false)
                 }
             )
         }
@@ -111,29 +129,28 @@ fun MicroAlertNavHost(
         }
 
         composable(Screen.SENSOR_STATUS) {
-            SensorStatusScreen(uiState = sensorStatusUiState)
+            SensorStatusScreen(
+                uiState = sensorStatusUiState,
+                onRequestPermissions = onRequestPermissions
+            )
         }
 
         composable(Screen.HISTORY) {
             SessionHistoryScreen(
                 uiState = historyUiState,
-                onClearHistoryClick = { historyViewModel.clearHistory() }
+                onClearHistoryClick = { historyViewModel.clearHistory() },
+                onLoadSamples = { historyViewModel.loadSampleSessions() }
             )
         }
 
         composable(Screen.SETTINGS) {
             SettingsScreen(
                 uiState = settingsUiState,
-                onToggleAppMode = {
-                    settingsViewModel.toggleAppMode()
-                    homeViewModel.toggleAppMode()
-                },
                 onToggleVibration = { settingsViewModel.toggleVibration() },
-                onToggleReactionTest = { navController.navigate(Screen.REACTION_TEST) },
                 onCycleCooldown = { settingsViewModel.cycleCooldown() },
+                onOpenReactionTest = { navController.navigate(Screen.REACTION_TEST) },
                 onClearAllData = {
                     settingsViewModel.clearAllData()
-                    historyViewModel.clearHistory()
                 }
             )
         }

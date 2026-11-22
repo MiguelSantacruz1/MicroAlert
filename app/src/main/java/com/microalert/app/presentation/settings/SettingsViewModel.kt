@@ -2,7 +2,7 @@ package com.microalert.app.presentation.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.microalert.app.domain.model.AppMode
+import com.microalert.app.domain.alerts.AlertManager
 import com.microalert.app.domain.usecase.ClearHistoryUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -11,40 +11,36 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SettingsViewModel(
-    private val clearHistoryUseCase: ClearHistoryUseCase? = null
+    private val clearHistoryUseCase: ClearHistoryUseCase? = null,
+    private val alertManager: AlertManager? = null,
+    private val store: SettingsStore? = null
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(SettingsUiState())
+    private val _uiState = MutableStateFlow(
+        SettingsUiState(
+            isVibrationEnabled = store?.isVibrationEnabled() ?: true,
+            vibrationCooldownSeconds = store?.cooldownSeconds() ?: 30
+        )
+    )
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
 
-    fun toggleAppMode() {
-        _uiState.update { current ->
-            val nextMode = if (current.appMode == AppMode.REAL) AppMode.DEMO else AppMode.REAL
-            current.copy(appMode = nextMode)
-        }
+    init {
+        applyToAlerts(_uiState.value)
     }
 
     fun toggleVibration() {
-        _uiState.update { current ->
-            current.copy(isVibrationEnabled = !current.isVibrationEnabled)
-        }
-    }
-
-    fun toggleReactionTest() {
-        _uiState.update { current ->
-            current.copy(isReactionTestEnabled = !current.isReactionTestEnabled)
-        }
+        change { it.copy(isVibrationEnabled = !it.isVibrationEnabled) }
     }
 
     fun cycleCooldown() {
-        _uiState.update { current ->
-            val nextCooldown = when (current.vibrationCooldownSeconds) {
+        change {
+            val next = when (it.vibrationCooldownSeconds) {
                 15 -> 30
                 30 -> 45
                 45 -> 60
                 else -> 15
             }
-            current.copy(vibrationCooldownSeconds = nextCooldown)
+            it.copy(vibrationCooldownSeconds = next)
         }
     }
 
@@ -52,5 +48,23 @@ class SettingsViewModel(
         viewModelScope.launch {
             clearHistoryUseCase?.invoke()
         }
+    }
+
+    private fun change(transform: (SettingsUiState) -> SettingsUiState) {
+        _uiState.update(transform)
+        val state = _uiState.value
+        store?.save(state.isVibrationEnabled, state.vibrationCooldownSeconds)
+        applyToAlerts(state)
+    }
+
+    private fun applyToAlerts(state: SettingsUiState) {
+        val manager = alertManager ?: return
+        val base = state.vibrationCooldownSeconds * 1000L
+        manager.config = manager.config.copy(
+            isVibrationEnabled = state.isVibrationEnabled,
+            criticalCooldownMs = base,
+            highCooldownMs = base * 2,
+            precautionCooldownMs = base * 3
+        )
     }
 }

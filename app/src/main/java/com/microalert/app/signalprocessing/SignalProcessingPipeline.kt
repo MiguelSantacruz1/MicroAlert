@@ -7,10 +7,10 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
 class SignalProcessingPipeline(
-    windowDurationMs: Long = 60_000L,
-    windowStepMs: Long = 30_000L
+    private val windowDurationMs: Long = 60_000L,
+    private val windowStepMs: Long = 30_000L
 ) {
-    private val bufferManager = BufferWindowManager(windowDurationMs, windowStepMs)
+    private var bufferManager = BufferWindowManager(windowDurationMs, windowStepMs)
     private val aggregator = FeatureAggregator()
 
     private val _windowStream = MutableSharedFlow<ProcessedWindowData>(replay = 1, extraBufferCapacity = 10)
@@ -24,7 +24,16 @@ class SignalProcessingPipeline(
         }
     }
 
+    fun configure(windowDurationMs: Long, windowStepMs: Long) {
+        bufferManager = BufferWindowManager(windowDurationMs, windowStepMs)
+    }
+
+    fun restoreDefaults() {
+        bufferManager = BufferWindowManager(windowDurationMs, windowStepMs)
+    }
+
     fun reset() {
         bufferManager.clear()
+        _windowStream.resetReplayCache()
     }
 }

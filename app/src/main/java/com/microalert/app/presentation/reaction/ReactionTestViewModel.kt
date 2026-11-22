@@ -25,13 +25,13 @@ class ReactionTestViewModel(
 
     fun startTestSequence() {
         testJob?.cancel()
-        _uiState.update { it.copy(phase = ReactionTestPhase.WAITING_FOR_STIMULUS, message = "¡Atención! Esperando estímulo...") }
+        _uiState.update { it.copy(phase = ReactionTestPhase.WAITING_FOR_STIMULUS, message = "Espera la señal...") }
 
         testJob = viewModelScope.launch {
             val randomDelay = Random.nextLong(2000L, 5000L)
             delay(randomDelay)
             stimulusStartTimeMs = System.currentTimeMillis()
-            _uiState.update { it.copy(phase = ReactionTestPhase.STIMULUS_ACTIVE, message = "¡PRESIONE AHORA!") }
+            _uiState.update { it.copy(phase = ReactionTestPhase.STIMULUS_ACTIVE, message = "¡AHORA!") }
 
             delay(5000L)
             if (_uiState.value.phase == ReactionTestPhase.STIMULUS_ACTIVE) {
@@ -42,7 +42,7 @@ class ReactionTestViewModel(
                     it.copy(
                         phase = ReactionTestPhase.COMPLETED,
                         lastLatencyMs = null,
-                        message = "Tiempo agotado sin respuesta."
+                        message = "Sin respuesta a tiempo."
                     )
                 }
             }
@@ -60,7 +60,7 @@ class ReactionTestViewModel(
                 it.copy(
                     phase = ReactionTestPhase.COMPLETED,
                     lastLatencyMs = latency,
-                    message = "¡Respuesta registrada! Latencia: ${latency} ms"
+                    message = "${latency} ms"
                 )
             }
         } else if (_uiState.value.phase == ReactionTestPhase.WAITING_FOR_STIMULUS) {
@@ -68,7 +68,7 @@ class ReactionTestViewModel(
             _uiState.update {
                 it.copy(
                     phase = ReactionTestPhase.INSTRUCTIONS,
-                    message = "Anticipación temprana. Intente de nuevo."
+                    message = "Te adelantaste. Inténtalo de nuevo."
                 )
             }
         }

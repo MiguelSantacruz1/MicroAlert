@@ -6,7 +6,8 @@ import com.microalert.app.domain.model.RiskLevel
 data class MonitoringUiState(
     val isMonitoring: Boolean = false,
     val appMode: AppMode = AppMode.REAL,
-    val heartRateBpm: Float = 72.0f,
+    val heartRateBpm: Float = 0f,
+    val heartRateValid: Boolean = false,
     val accelerometerMagnitude: Float = 9.81f,
     val gyroscopeMagnitude: Float = 0.04f,
     val inactivityDurationSeconds: Long = 0L,
@@ -15,5 +16,6 @@ data class MonitoringUiState(
     val hrvAvailable: Boolean = false,
     val hrvSdnnMs: Float? = null,
     val hrvRmssdMs: Float? = null,
-    val windowCountProcessed: Int = 0
+    val windowCountProcessed: Int = 0,
+    val demoLevel: com.microalert.app.sensors.DemoLevel = com.microalert.app.sensors.DemoLevel.AUTO
 )

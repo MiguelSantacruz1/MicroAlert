@@ -2,23 +2,26 @@ package com.microalert.app.presentation.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
-import androidx.wear.compose.material3.Button
-import androidx.wear.compose.material3.ButtonDefaults
-import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
 import com.microalert.app.domain.model.AppMode
-import com.microalert.app.presentation.components.StatusChip
+import com.microalert.app.presentation.theme.GlyphButton
+import com.microalert.app.presentation.theme.Neon
+import com.microalert.app.presentation.theme.NeonBackdrop
+import com.microalert.app.presentation.theme.NeonGlyph
+import com.microalert.app.presentation.theme.NeonRow
+import com.microalert.app.presentation.theme.NeonTitle
+import com.microalert.app.presentation.theme.PowerOrb
 
 @Composable
 fun HomeScreen(
@@ -30,71 +33,59 @@ fun HomeScreen(
     onToggleAppMode: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    ScalingLazyColumn(
-        modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(6.dp)
-    ) {
-        item {
-            Text(
-                text = "MICROALERT",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
-            )
-        }
+    val isDemo = uiState.appMode == AppMode.DEMO
+    NeonBackdrop(accent = if (uiState.isMonitoringActive) Neon.Lime else Neon.Violet, modifier = modifier) {
+        ScalingLazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(horizontal = 14.dp, vertical = 28.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            item { NeonTitle("MICROALERT") }
 
-        item {
-            StatusChip(
-                label = "Modo:",
-                statusText = uiState.appMode.title,
-                statusColor = if (uiState.appMode == AppMode.REAL) Color(0xFF4CAF50) else Color(0xFFFF9800),
-                onClick = onToggleAppMode
-            )
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(4.dp))
-            Button(
-                onClick = onStartMonitoringClick,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = if (uiState.isMonitoringActive) Color(0xFFF44336) else MaterialTheme.colorScheme.primary
-                ),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = if (uiState.isMonitoringActive) "Detener Monitoreo" else "Iniciar Monitoreo",
-                    style = MaterialTheme.typography.labelMedium
+            item {
+                Spacer(Modifier.height(2.dp))
+                PowerOrb(
+                    label = if (uiState.isMonitoringActive) "EN VIVO" else "INICIAR",
+                    sublabel = if (uiState.isMonitoringActive) "toca para ver" else "monitoreo",
+                    live = uiState.isMonitoringActive,
+                    onClick = onStartMonitoringClick
                 )
             }
-        }
 
-        item {
-            StatusChip(
-                label = "Estado Sensores",
-                statusText = "${uiState.activeSensorsCount}/${uiState.totalSensorsCount} OK",
-                statusColor = MaterialTheme.colorScheme.primary,
-                onClick = onNavigateToSensorStatus
-            )
-        }
+            item {
+                NeonRow(
+                    label = "Modo",
+                    value = if (isDemo) "DEMO" else "REAL",
+                    accent = if (isDemo) Neon.Amber else Neon.Lime,
+                    onClick = onToggleAppMode
+                )
+            }
 
-        item {
-            StatusChip(
-                label = "Historial",
-                statusText = "Ver todo",
-                statusColor = MaterialTheme.colorScheme.onSurface,
-                onClick = onNavigateToHistory
-            )
-        }
+            item {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalAlignment = Alignment.Top
+                ) {
+                    GlyphButton(
+                        glyph = NeonGlyph.PULSE,
+                        label = "${uiState.activeSensorsCount}/${uiState.totalSensorsCount}",
+                        accent = if (uiState.activeSensorsCount >= 3) Neon.Cyan else Neon.Amber,
+                        onClick = onNavigateToSensorStatus
+                    )
+                    GlyphButton(NeonGlyph.CLOCK, "Historial", Neon.Violet, onNavigateToHistory)
+                    GlyphButton(NeonGlyph.SLIDERS, "Ajustes", Neon.Magenta, onNavigateToSettings)
+                }
+            }
 
-        item {
-            StatusChip(
-                label = "Configuración",
-                statusText = "Ajustes",
-                statusColor = MaterialTheme.colorScheme.onSurface,
-                onClick = onNavigateToSettings
-            )
+            item {
+                Text(
+                    text = "Prototipo, no es un dispositivo médico",
+                    color = Neon.TextLo,
+                    fontSize = 8.sp,
+                    fontWeight = FontWeight.Normal
+                )
+            }
         }
     }
 }
