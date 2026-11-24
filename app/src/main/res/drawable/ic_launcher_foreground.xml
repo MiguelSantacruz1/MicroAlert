@@ -1,12 +1,38 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
+    <!-- Halo exterior -->
     <path
-        android:fillColor="#E53935"
-        android:pathData="M54,20A34,34 0 1,0 88,54A34,34 0 0,0 54,20ZM54,80A26,26 0 1,1 80,54A26,26 0 0,1 54,80Z" />
+        android:fillColor="#00000000"
+        android:strokeWidth="1.5"
+        android:strokeAlpha="0.45"
+        android:strokeColor="#00E5FF"
+        android:pathData="M54,54m-34,0a34,34 0 1,0 68,0a34,34 0 1,0 -68,0" />
+    <!-- Corazón -->
     <path
-        android:fillColor="#FF5252"
-        android:pathData="M51,36h6v22h-6zM51,64h6v6h-6z" />
+        android:pathData="M54,77C54,77 31,63 31,48C31,40 37,34 44,34C49,34 52,37 54,40C56,37 59,34 64,34C71,34 77,40 77,48C77,63 54,77 54,77Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="31"
+                android:startY="34"
+                android:endX="77"
+                android:endY="77"
+                android:type="linear">
+                <item android:color="#00E5FF" android:offset="0.0" />
+                <item android:color="#7C4DFF" android:offset="0.55" />
+                <item android:color="#FF2D95" android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <!-- Latido -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:strokeWidth="3.2"
+        android:pathData="M25,55H41L46,44L53,66L58,50L61,55H83" />
 </vector>
