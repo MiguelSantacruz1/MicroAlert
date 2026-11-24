@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.microalert.app.storage.entity.MonitoringSessionEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -12,6 +13,9 @@ interface SessionDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSession(session: MonitoringSessionEntity): Long
+
+    @Update
+    suspend fun updateSession(session: MonitoringSessionEntity)
 
     @Query("SELECT * FROM monitoring_sessions ORDER BY startTimestampMs DESC")
     fun getAllSessions(): Flow<List<MonitoringSessionEntity>>

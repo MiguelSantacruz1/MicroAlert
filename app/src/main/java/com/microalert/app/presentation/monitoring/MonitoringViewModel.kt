@@ -48,6 +48,7 @@ class MonitoringViewModel(
     private var monitoringJob: Job? = null
     private var timerJob: Job? = null
     private var windowJob: Job? = null
+    private var sessionIdJob: Job? = null
 
     private var sessionStartTimestampMs: Long = 0L
     private var maxRiskObserved: RiskLevel = RiskLevel.NORMAL
@@ -85,7 +86,8 @@ class MonitoringViewModel(
             processedWindowsCount = 0
         )
 
-        viewModelScope.launch {
+        activeSessionId = 0L
+        sessionIdJob = viewModelScope.launch {
             activeSessionId = saveSessionUseCase?.invoke(initialSession) ?: 0L
         }
 
@@ -139,6 +141,8 @@ class MonitoringViewModel(
                     var sessionDurationSec = (elapsedMs / 1000f).coerceAtLeast(1f)
                     var windowData = rawWindow
                     if (_uiState.value.appMode == AppMode.DEMO) {
+                        val span = rawWindow.windowEndTimestampMs - rawWindow.windowStartTimestampMs
+                        if (span < DemoScenario.WINDOW_MS * 7 / 10) return@collect
                         val fatigue = DemoScenario.current
                         sessionDurationSec = DemoScenario.sessionSeconds(fatigue)
                         windowData = rawWindow.copy(
@@ -187,7 +191,13 @@ class MonitoringViewModel(
 
                             if (alertEvent != null) {
                                 alertsCount++
-                                sessionHistoryRepository?.recordAlertForSession(activeSessionId, alertEvent)
+                                sessionIdJob?.join()
+                                if (activeSessionId > 0L) {
+                                    try {
+                                        sessionHistoryRepository?.recordAlertForSession(activeSessionId, alertEvent)
+                                    } catch (_: Exception) {
+                                    }
+                                }
                                 _alertNavigationEvents.emit(alertEvent)
                             }
                         }

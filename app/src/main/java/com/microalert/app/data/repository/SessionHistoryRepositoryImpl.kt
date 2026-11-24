@@ -50,6 +50,10 @@ class SessionHistoryRepositoryImpl(
             avgHeartRateBpm = session.avgHeartRateBpm,
             processedWindowsCount = session.processedWindowsCount
         )
+        if (entity.id != 0L && sessionDao.getSessionById(entity.id) != null) {
+            sessionDao.updateSession(entity)
+            return entity.id
+        }
         return sessionDao.insertSession(entity)
     }
 

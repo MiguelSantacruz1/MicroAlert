@@ -122,6 +122,12 @@ class SessionHistoryRepositoryTest {
             return session.id
         }
 
+        override suspend fun updateSession(session: MonitoringSessionEntity) {
+            val i = sessions.indexOfFirst { it.id == session.id }
+            if (i >= 0) sessions[i] = session
+            sessionsFlow.value = sessions.toList()
+        }
+
         override suspend fun getSessionById(sessionId: Long): MonitoringSessionEntity? {
             return sessions.find { it.id == sessionId }
         }
