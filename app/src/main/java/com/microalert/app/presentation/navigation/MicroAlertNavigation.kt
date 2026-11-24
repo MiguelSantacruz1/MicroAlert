@@ -148,6 +148,8 @@ fun MicroAlertNavHost(
                 uiState = settingsUiState,
                 onToggleVibration = { settingsViewModel.toggleVibration() },
                 onCycleCooldown = { settingsViewModel.cycleCooldown() },
+                onToggleTheme = { settingsViewModel.toggleTheme() },
+                onToggleLanguage = { settingsViewModel.toggleLanguage() },
                 onOpenReactionTest = { navController.navigate(Screen.REACTION_TEST) },
                 onClearAllData = {
                     settingsViewModel.clearAllData()

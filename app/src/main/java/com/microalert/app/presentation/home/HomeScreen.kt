@@ -1,6 +1,7 @@
 package com.microalert.app.presentation.home
 
 import androidx.compose.foundation.layout.Arrangement
+import com.microalert.app.presentation.theme.tr
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -46,8 +47,8 @@ fun HomeScreen(
             item {
                 Spacer(Modifier.height(2.dp))
                 PowerOrb(
-                    label = if (uiState.isMonitoringActive) "EN VIVO" else "INICIAR",
-                    sublabel = if (uiState.isMonitoringActive) "toca para ver" else "monitoreo",
+                    label = if (uiState.isMonitoringActive) tr("EN VIVO", "LIVE") else tr("INICIAR", "START"),
+                    sublabel = if (uiState.isMonitoringActive) tr("toca para ver", "tap to view") else tr("monitoreo", "monitoring"),
                     live = uiState.isMonitoringActive,
                     onClick = onStartMonitoringClick
                 )
@@ -55,7 +56,7 @@ fun HomeScreen(
 
             item {
                 NeonRow(
-                    label = "Modo",
+                    label = tr("Modo", "Mode"),
                     value = if (isDemo) "DEMO" else "REAL",
                     accent = if (isDemo) Neon.Amber else Neon.Lime,
                     onClick = onToggleAppMode
@@ -73,14 +74,14 @@ fun HomeScreen(
                         accent = if (uiState.activeSensorsCount >= 3) Neon.Cyan else Neon.Amber,
                         onClick = onNavigateToSensorStatus
                     )
-                    GlyphButton(NeonGlyph.CLOCK, "Historial", Neon.Violet, onNavigateToHistory)
-                    GlyphButton(NeonGlyph.SLIDERS, "Ajustes", Neon.Magenta, onNavigateToSettings)
+                    GlyphButton(NeonGlyph.CLOCK, tr("Historial", "History"), Neon.Violet, onNavigateToHistory)
+                    GlyphButton(NeonGlyph.SLIDERS, tr("Ajustes", "Settings"), Neon.Magenta, onNavigateToSettings)
                 }
             }
 
             item {
                 Text(
-                    text = "Prototipo, no es un dispositivo médico",
+                    text = tr("Prototipo, no es un dispositivo médico", "Prototype, not a medical device"),
                     color = Neon.TextLo,
                     fontSize = 8.sp,
                     fontWeight = FontWeight.Normal

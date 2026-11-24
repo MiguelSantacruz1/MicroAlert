@@ -1,6 +1,9 @@
 package com.microalert.app.presentation.monitoring
 
 import androidx.compose.animation.core.RepeatMode
+import com.microalert.app.presentation.theme.localDescription
+import com.microalert.app.presentation.theme.localLabel
+import com.microalert.app.presentation.theme.tr
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
@@ -87,7 +90,7 @@ fun MonitoringScreen(
             item {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     GlowText(
-                        text = risk.label,
+                        text = risk.localLabel,
                         color = risk.neon,
                         fontSize = 21.sp,
                         letterSpacing = 3.sp,
@@ -95,7 +98,7 @@ fun MonitoringScreen(
                     )
                     Spacer(Modifier.height(2.dp))
                     Text(
-                        text = risk.description,
+                        text = risk.localDescription,
                         color = Neon.TextLo,
                         fontSize = 10.sp,
                         textAlign = TextAlign.Center,
@@ -107,7 +110,7 @@ fun MonitoringScreen(
             if (isDemo) {
                 item {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text("ESCENARIO DEMO", color = Neon.Amber, fontSize = 9.sp, letterSpacing = 2.sp)
+                        Text(tr("ESCENARIO DEMO", "DEMO SCENARIO"), color = Neon.Amber, fontSize = 9.sp, letterSpacing = 2.sp)
                         Spacer(Modifier.height(4.dp))
                         DemoLevel.entries.chunked(2).forEachIndexed { index, row ->
                             if (index > 0) Spacer(Modifier.height(5.dp))
@@ -122,13 +125,13 @@ fun MonitoringScreen(
             item {
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.fillMaxWidth()) {
                     StatTile(
-                        label = "SESIÓN",
+                        label = tr("SESIÓN", "SESSION"),
                         value = Formatters.formatClock(uiState.sessionDurationSeconds),
                         accent = Neon.Cyan,
                         modifier = Modifier.weight(1f)
                     )
                     StatTile(
-                        label = "QUIETO",
+                        label = tr("QUIETO", "STILL"),
                         value = "${uiState.inactivityDurationSeconds}s",
                         accent = Neon.Violet,
                         modifier = Modifier.weight(1f)
@@ -140,12 +143,12 @@ fun MonitoringScreen(
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.fillMaxWidth()) {
                     StatTile(
                         label = "HRV SDNN",
-                        value = if (uiState.hrvAvailable && uiState.hrvSdnnMs != null) "${uiState.hrvSdnnMs.toInt()}ms" else "N/D",
+                        value = if (uiState.hrvAvailable && uiState.hrvSdnnMs != null) "${uiState.hrvSdnnMs.toInt()}ms" else tr("N/D", "N/A"),
                         accent = if (uiState.hrvAvailable) Neon.Lime else Neon.Amber,
                         modifier = Modifier.weight(1f)
                     )
                     StatTile(
-                        label = "VENTANAS",
+                        label = tr("VENTANAS", "WINDOWS"),
                         value = "${uiState.windowCountProcessed}",
                         accent = Neon.Magenta,
                         modifier = Modifier.weight(1f)
@@ -155,7 +158,7 @@ fun MonitoringScreen(
 
             item {
                 GhostButton(
-                    text = "DETENER",
+                    text = tr("DETENER", "STOP"),
                     onClick = onStopMonitoringClick,
                     accent = Neon.Red,
                     modifier = Modifier.fillMaxWidth(0.8f)
@@ -178,7 +181,7 @@ private fun LiveTag(isDemo: Boolean) {
         Row(Modifier.alpha(blink)) { GlowDot(color, 7.dp) }
         Spacer(Modifier.width(7.dp))
         Text(
-            text = if (isDemo) "DEMO EN VIVO" else "SENSORES EN VIVO",
+            text = if (isDemo) tr("DEMO EN VIVO", "LIVE DEMO") else tr("SENSORES EN VIVO", "LIVE SENSORS"),
             color = color,
             fontSize = 10.sp,
             fontWeight = FontWeight.Bold,
@@ -197,7 +200,7 @@ private fun DemoPill(
     val shape = RoundedCornerShape(50)
     val on = level == selected
     Text(
-        text = level.label,
+        text = level.localLabel,
         color = if (on) Neon.Void else accent,
         fontSize = 10.sp,
         fontWeight = FontWeight.Bold,

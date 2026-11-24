@@ -1,6 +1,8 @@
 package com.microalert.app.presentation.history
 
 import androidx.compose.foundation.layout.Arrangement
+import com.microalert.app.presentation.theme.localLabel
+import com.microalert.app.presentation.theme.tr
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -46,24 +48,24 @@ fun SessionHistoryScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(7.dp)
         ) {
-            item { NeonTitle("HISTORIAL", accent = Neon.Violet) }
+            item { NeonTitle(tr("HISTORIAL", "HISTORY"), accent = Neon.Violet) }
 
             when {
                 uiState.isLoading -> item {
-                    Text("Cargando...", color = Neon.TextLo, fontSize = 11.sp)
+                    Text(tr("Cargando...", "Loading..."), color = Neon.TextLo, fontSize = 11.sp)
                 }
 
                 uiState.sessions.isEmpty() -> {
                     item {
                         Text(
-                            text = "Aún no hay sesiones. Inicia un monitoreo para verlas aquí.",
+                            text = tr("Aún no hay sesiones. Inicia un monitoreo para verlas aquí.", "No sessions yet. Start monitoring to see them here."),
                             color = Neon.TextLo,
                             fontSize = 11.sp,
                             textAlign = TextAlign.Center
                         )
                     }
                     item {
-                        GhostButton(text = "CARGAR EJEMPLOS", onClick = onLoadSamples, accent = Neon.Cyan)
+                        GhostButton(text = tr("CARGAR EJEMPLOS", "LOAD SAMPLES"), onClick = onLoadSamples, accent = Neon.Cyan)
                     }
                 }
 
@@ -88,7 +90,7 @@ fun SessionHistoryScreen(
                             ) {
                                 Text(session.durationFormatted, color = Neon.TextLo, fontSize = 10.sp)
                                 Text(
-                                    text = session.maxRiskLevel.label,
+                                    text = session.maxRiskLevel.localLabel,
                                     color = session.maxRiskLevel.neon,
                                     fontSize = 10.sp,
                                     fontWeight = FontWeight.Bold
@@ -107,7 +109,7 @@ fun SessionHistoryScreen(
                     item {
                         Spacer(Modifier.height(4.dp))
                         GhostButton(
-                            text = if (confirmClear) "¿SEGURO? TOCA DE NUEVO" else "BORRAR TODO",
+                            text = if (confirmClear) tr("¿SEGURO? TOCA DE NUEVO", "SURE? TAP AGAIN") else tr("BORRAR TODO", "CLEAR ALL"),
                             onClick = {
                                 if (confirmClear) {
                                     confirmClear = false
@@ -125,4 +127,4 @@ fun SessionHistoryScreen(
     }
 }
 
-private fun alertsLabel(count: Int): String = if (count == 1) "1 alerta" else "$count alertas"
+private fun alertsLabel(count: Int): String = if (count == 1) tr("1 alerta", "1 alert") else tr("$count alertas", "$count alerts")

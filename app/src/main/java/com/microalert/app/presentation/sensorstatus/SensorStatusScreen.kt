@@ -1,6 +1,7 @@
 package com.microalert.app.presentation.sensorstatus
 
 import androidx.compose.foundation.layout.Arrangement
+import com.microalert.app.presentation.theme.tr
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,22 +32,22 @@ fun SensorStatusScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(7.dp)
         ) {
-            item { NeonTitle("SENSORES") }
+            item { NeonTitle(tr("SENSORES", "SENSORS")) }
 
-            item { SensorRow("Pulso", uiState.isHeartRateAvailable) }
-            item { SensorRow("Acelerómetro", uiState.isAccelerometerAvailable) }
-            item { SensorRow("Giroscopio", uiState.isGyroscopeAvailable) }
+            item { SensorRow(tr("Pulso", "Pulse"), uiState.isHeartRateAvailable) }
+            item { SensorRow(tr("Acelerómetro", "Accelerometer"), uiState.isAccelerometerAvailable) }
+            item { SensorRow(tr("Giroscopio", "Gyroscope"), uiState.isGyroscopeAvailable) }
             item {
                 NeonRow(
                     label = "HRV",
-                    value = if (uiState.isHrvAvailable) "OK" else "No expuesto",
+                    value = if (uiState.isHrvAvailable) "OK" else tr("No expuesto", "Not exposed"),
                     accent = if (uiState.isHrvAvailable) Neon.Lime else Neon.Amber
                 )
             }
             item {
                 NeonRow(
-                    label = "Permisos",
-                    value = if (permissionsOk) "OK" else "Faltan",
+                    label = tr("Permisos", "Permissions"),
+                    value = if (permissionsOk) "OK" else tr("Faltan", "Missing"),
                     accent = if (permissionsOk) Neon.Lime else Neon.Red
                 )
             }
@@ -54,7 +55,7 @@ fun SensorStatusScreen(
             if (!permissionsOk) {
                 item {
                     Spacer(Modifier.height(2.dp))
-                    GhostButton(text = "CONCEDER", onClick = onRequestPermissions, accent = Neon.Cyan)
+                    GhostButton(text = tr("CONCEDER", "GRANT"), onClick = onRequestPermissions, accent = Neon.Cyan)
                 }
             }
         }
@@ -65,7 +66,7 @@ fun SensorStatusScreen(
 private fun SensorRow(label: String, available: Boolean) {
     NeonRow(
         label = label,
-        value = if (available) "OK" else "No disponible",
+        value = if (available) "OK" else tr("No disponible", "Unavailable"),
         accent = if (available) Neon.Lime else Neon.Red
     )
 }

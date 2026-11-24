@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.wear.compose.material3.ColorScheme
 import androidx.wear.compose.material3.MaterialTheme
 
-val MicroAlertColorScheme = ColorScheme(
+fun microAlertColorScheme() = ColorScheme(
     primary = Neon.Cyan,
     onPrimary = Neon.Void,
     primaryContainer = Neon.Panel,
@@ -27,7 +27,7 @@ fun MicroAlertTheme(
     content: @Composable () -> Unit
 ) {
     MaterialTheme(
-        colorScheme = MicroAlertColorScheme,
+        colorScheme = microAlertColorScheme(),
         content = content
     )
 }

@@ -11,6 +11,18 @@ class SettingsStore(context: Context) {
 
     fun cooldownSeconds(): Int = prefs.getInt(KEY_COOLDOWN, 30)
 
+    fun isDarkTheme(): Boolean = prefs.getBoolean(KEY_DARK, true)
+
+    fun saveDarkTheme(dark: Boolean) {
+        prefs.edit().putBoolean(KEY_DARK, dark).apply()
+    }
+
+    fun isEnglish(): Boolean = prefs.getBoolean(KEY_EN, false)
+
+    fun saveEnglish(en: Boolean) {
+        prefs.edit().putBoolean(KEY_EN, en).apply()
+    }
+
     fun appMode(): AppMode =
         if (prefs.getString(KEY_MODE, null) == AppMode.REAL.name) AppMode.REAL else AppMode.DEMO
 
@@ -26,6 +38,8 @@ class SettingsStore(context: Context) {
     }
 
     private companion object {
+        const val KEY_DARK = "dark_theme"
+        const val KEY_EN = "english"
         const val KEY_MODE = "app_mode"
         const val KEY_VIBRATION = "vibration_enabled"
         const val KEY_COOLDOWN = "cooldown_seconds"

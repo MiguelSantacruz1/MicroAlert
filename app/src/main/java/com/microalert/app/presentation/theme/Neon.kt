@@ -30,6 +30,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -59,18 +61,20 @@ import androidx.wear.compose.material3.Text
 import com.microalert.app.domain.model.RiskLevel
 
 object Neon {
-    val Void = Color(0xFF04050B)
-    val Ink = Color(0xFF0B0F22)
-    val Panel = Color(0xFF131936)
-    val Cyan = Color(0xFF00F0FF)
-    val Violet = Color(0xFF9B5CFF)
-    val Magenta = Color(0xFFFF2BD6)
-    val Lime = Color(0xFF39FF9A)
-    val Yellow = Color(0xFFFFE14D)
-    val Amber = Color(0xFFFF8A1F)
-    val Red = Color(0xFFFF2D55)
-    val TextHi = Color(0xFFF2F4FF)
-    val TextLo = Color(0xFF8C93B8)
+    var isDark by mutableStateOf(true)
+
+    val Void get() = if (isDark) Color(0xFF04050B) else Color(0xFFF3F4FB)
+    val Ink get() = if (isDark) Color(0xFF0B0F22) else Color(0xFFE4E8F7)
+    val Panel get() = if (isDark) Color(0xFF131936) else Color(0xFFFFFFFF)
+    val Cyan get() = if (isDark) Color(0xFF00F0FF) else Color(0xFF008FA3)
+    val Violet get() = if (isDark) Color(0xFF9B5CFF) else Color(0xFF6A3DD8)
+    val Magenta get() = if (isDark) Color(0xFFFF2BD6) else Color(0xFFC2185B)
+    val Lime get() = if (isDark) Color(0xFF39FF9A) else Color(0xFF00965A)
+    val Yellow get() = if (isDark) Color(0xFFFFE14D) else Color(0xFFA67C00)
+    val Amber get() = if (isDark) Color(0xFFFF8A1F) else Color(0xFFD65A00)
+    val Red get() = if (isDark) Color(0xFFFF2D55) else Color(0xFFD50032)
+    val TextHi get() = if (isDark) Color(0xFFF2F4FF) else Color(0xFF12162B)
+    val TextLo get() = if (isDark) Color(0xFF8C93B8) else Color(0xFF555C80)
 }
 
 val RiskLevel.neon: Color
@@ -115,7 +119,7 @@ fun NeonBackdrop(
                 val topCenter = Offset(w * (0.15f + 0.5f * drift), h * 0.05f)
                 drawCircle(
                     brush = Brush.radialGradient(
-                        listOf(animatedAccent.copy(alpha = 0.34f), Color.Transparent),
+                        listOf(animatedAccent.copy(alpha = if (Neon.isDark) 0.34f else 0.20f), Color.Transparent),
                         center = topCenter,
                         radius = r
                     ),
@@ -125,7 +129,7 @@ fun NeonBackdrop(
                 val bottomCenter = Offset(w * (0.85f - 0.5f * drift), h * 0.98f)
                 drawCircle(
                     brush = Brush.radialGradient(
-                        listOf(Neon.Magenta.copy(alpha = 0.22f), Color.Transparent),
+                        listOf(Neon.Magenta.copy(alpha = if (Neon.isDark) 0.22f else 0.10f), Color.Transparent),
                         center = bottomCenter,
                         radius = r
                     ),
@@ -158,7 +162,7 @@ fun GlowText(
         letterSpacing = letterSpacing,
         textAlign = textAlign,
         maxLines = maxLines,
-        style = TextStyle(shadow = Shadow(glow.copy(alpha = 0.75f), Offset.Zero, 9f))
+        style = TextStyle(shadow = if (Neon.isDark) Shadow(glow.copy(alpha = 0.75f), Offset.Zero, 9f) else null)
     )
 }
 
@@ -274,7 +278,7 @@ fun StatTile(
             fontSize = 15.sp,
             fontWeight = FontWeight.ExtraBold,
             maxLines = 1,
-            style = TextStyle(shadow = Shadow(accent.copy(alpha = 0.7f), Offset.Zero, 8f))
+            style = TextStyle(shadow = if (Neon.isDark) Shadow(accent.copy(alpha = 0.7f), Offset.Zero, 8f) else null)
         )
         Text(text = label, color = Neon.TextLo, fontSize = 9.sp, letterSpacing = 1.sp, maxLines = 1)
     }

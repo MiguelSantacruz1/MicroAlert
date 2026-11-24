@@ -1,6 +1,8 @@
 package com.microalert.app.presentation.settings
 
 import androidx.compose.foundation.layout.Arrangement
+import com.microalert.app.presentation.theme.Lang
+import com.microalert.app.presentation.theme.tr
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,6 +27,8 @@ fun SettingsScreen(
     uiState: SettingsUiState,
     onToggleVibration: () -> Unit,
     onCycleCooldown: () -> Unit,
+    onToggleTheme: () -> Unit,
+    onToggleLanguage: () -> Unit,
     onOpenReactionTest: () -> Unit,
     onClearAllData: () -> Unit,
     modifier: Modifier = Modifier
@@ -38,11 +42,11 @@ fun SettingsScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(7.dp)
         ) {
-            item { NeonTitle("AJUSTES", accent = Neon.Magenta) }
+            item { NeonTitle(tr("AJUSTES", "SETTINGS"), accent = Neon.Magenta) }
 
             item {
                 NeonRow(
-                    label = "Vibración",
+                    label = tr("Vibración", "Vibration"),
                     value = if (uiState.isVibrationEnabled) "ON" else "OFF",
                     accent = if (uiState.isVibrationEnabled) Neon.Lime else Neon.Red,
                     onClick = onToggleVibration
@@ -51,7 +55,25 @@ fun SettingsScreen(
 
             item {
                 NeonRow(
-                    label = "Entre alertas",
+                    label = tr("Tema", "Theme"),
+                    value = if (uiState.isDarkTheme) tr("OSCURO", "DARK") else tr("CLARO", "LIGHT"),
+                    accent = Neon.Violet,
+                    onClick = onToggleTheme
+                )
+            }
+
+            item {
+                NeonRow(
+                    label = tr("Idioma", "Language"),
+                    value = if (Lang.isEnglish) "ENGLISH" else "ESPAÑOL",
+                    accent = Neon.Lime,
+                    onClick = onToggleLanguage
+                )
+            }
+
+            item {
+                NeonRow(
+                    label = tr("Entre alertas", "Alert gap"),
                     value = "${uiState.vibrationCooldownSeconds}s",
                     accent = Neon.Cyan,
                     onClick = onCycleCooldown
@@ -60,8 +82,8 @@ fun SettingsScreen(
 
             item {
                 NeonRow(
-                    label = "Prueba de reacción",
-                    value = "ABRIR",
+                    label = tr("Prueba de reacción", "Reaction test"),
+                    value = tr("ABRIR", "OPEN"),
                     accent = Neon.Violet,
                     onClick = onOpenReactionTest
                 )
@@ -70,7 +92,7 @@ fun SettingsScreen(
             item {
                 Spacer(Modifier.height(4.dp))
                 GhostButton(
-                    text = if (confirmClear) "¿SEGURO? TOCA DE NUEVO" else "BORRAR DATOS",
+                    text = if (confirmClear) tr("¿SEGURO? TOCA DE NUEVO", "SURE? TAP AGAIN") else tr("BORRAR DATOS", "CLEAR DATA"),
                     onClick = {
                         if (confirmClear) {
                             confirmClear = false

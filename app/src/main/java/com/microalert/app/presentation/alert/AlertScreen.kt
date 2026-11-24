@@ -1,6 +1,9 @@
 package com.microalert.app.presentation.alert
 
 import androidx.compose.animation.core.RepeatMode
+import com.microalert.app.presentation.theme.localAlertText
+import com.microalert.app.presentation.theme.localLabel
+import com.microalert.app.presentation.theme.tr
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
@@ -60,7 +63,7 @@ fun AlertScreen(
             }
             item {
                 GlowText(
-                    text = uiState.riskLevel.label,
+                    text = uiState.riskLevel.localLabel,
                     color = Neon.TextHi,
                     glow = color,
                     fontSize = 26.sp,
@@ -70,7 +73,7 @@ fun AlertScreen(
             }
             item {
                 Text(
-                    text = uiState.alertMessage,
+                    text = uiState.riskLevel.localAlertText,
                     color = Neon.TextHi,
                     fontSize = 11.sp,
                     textAlign = TextAlign.Center,
@@ -80,7 +83,7 @@ fun AlertScreen(
             item {
                 Spacer(Modifier.height(4.dp))
                 NeonButton(
-                    text = "ENTENDIDO",
+                    text = tr("ENTENDIDO", "GOT IT"),
                     onClick = onAcknowledgeAlert,
                     colors = listOf(color, Neon.Magenta)
                 )

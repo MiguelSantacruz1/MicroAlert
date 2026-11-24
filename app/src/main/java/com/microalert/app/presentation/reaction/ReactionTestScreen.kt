@@ -1,6 +1,7 @@
 package com.microalert.app.presentation.reaction
 
 import androidx.compose.animation.animateColorAsState
+import com.microalert.app.presentation.theme.tr
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -106,7 +107,7 @@ fun ReactionTestScreen(
                 }
             } else {
                 GlowText(
-                    text = "REACCIÓN",
+                    text = tr("REACCIÓN", "REACTION"),
                     color = accent,
                     fontSize = 18.sp,
                     letterSpacing = 3.sp,
@@ -118,7 +119,9 @@ fun ReactionTestScreen(
 
             Text(
                 text = if (phase == ReactionTestPhase.COMPLETED && latency != null) {
-                    "milisegundos, ${rating(latency)}"
+                    tr("milisegundos", "milliseconds") + ", ${rating(latency)}"
+                } else if (phase == ReactionTestPhase.INSTRUCTIONS) {
+                    tr("Toca cuando aparezca la señal.", "Tap when the signal appears.")
                 } else {
                     uiState.message
                 },
@@ -130,16 +133,16 @@ fun ReactionTestScreen(
             Spacer(Modifier.height(10.dp))
 
             when (phase) {
-                ReactionTestPhase.INSTRUCTIONS -> NeonButton("COMENZAR", onStartTest)
-                ReactionTestPhase.COMPLETED -> NeonButton("LISTO", onFinish)
-                else -> Text("No lo uses mientras conduces", color = Neon.TextLo, fontSize = 9.sp)
+                ReactionTestPhase.INSTRUCTIONS -> NeonButton(tr("COMENZAR", "BEGIN"), onStartTest)
+                ReactionTestPhase.COMPLETED -> NeonButton(tr("LISTO", "DONE"), onFinish)
+                else -> Text(tr("No lo uses mientras conduces", "Do not use while driving"), color = Neon.TextLo, fontSize = 9.sp)
             }
         }
     }
 }
 
 private fun rating(latencyMs: Long): String = when {
-    latencyMs < 350 -> "alerta"
+    latencyMs < 350 -> tr("alerta", "alert")
     latencyMs < 500 -> "normal"
-    else -> "lento"
+    else -> tr("lento", "slow")
 }

@@ -1,6 +1,7 @@
 package com.microalert.app.presentation.reaction
 
 import androidx.lifecycle.ViewModel
+import com.microalert.app.presentation.theme.tr
 import androidx.lifecycle.viewModelScope
 import com.microalert.app.signalprocessing.ReactionTestManager
 import com.microalert.app.signalprocessing.model.ReactionTestResult
@@ -25,13 +26,13 @@ class ReactionTestViewModel(
 
     fun startTestSequence() {
         testJob?.cancel()
-        _uiState.update { it.copy(phase = ReactionTestPhase.WAITING_FOR_STIMULUS, message = "Espera la señal...") }
+        _uiState.update { it.copy(phase = ReactionTestPhase.WAITING_FOR_STIMULUS, message = tr("Espera la señal...", "Wait for the signal...")) }
 
         testJob = viewModelScope.launch {
             val randomDelay = Random.nextLong(2000L, 5000L)
             delay(randomDelay)
             stimulusStartTimeMs = System.currentTimeMillis()
-            _uiState.update { it.copy(phase = ReactionTestPhase.STIMULUS_ACTIVE, message = "¡AHORA!") }
+            _uiState.update { it.copy(phase = ReactionTestPhase.STIMULUS_ACTIVE, message = tr("¡AHORA!", "NOW!")) }
 
             delay(5000L)
             if (_uiState.value.phase == ReactionTestPhase.STIMULUS_ACTIVE) {
@@ -42,7 +43,7 @@ class ReactionTestViewModel(
                     it.copy(
                         phase = ReactionTestPhase.COMPLETED,
                         lastLatencyMs = null,
-                        message = "Sin respuesta a tiempo."
+                        message = tr("Sin respuesta a tiempo.", "No response in time.")
                     )
                 }
             }
@@ -68,7 +69,7 @@ class ReactionTestViewModel(
             _uiState.update {
                 it.copy(
                     phase = ReactionTestPhase.INSTRUCTIONS,
-                    message = "Te adelantaste. Inténtalo de nuevo."
+                    message = tr("Te adelantaste. Inténtalo de nuevo.", "Too early. Try again.")
                 )
             }
         }

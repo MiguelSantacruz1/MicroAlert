@@ -1,16 +1,17 @@
 package com.microalert.app.utils
 
+import com.microalert.app.presentation.theme.Lang
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 object Formatters {
 
-    private val sessionDateFormat = SimpleDateFormat("dd MMM, hh:mm a", Locale.getDefault())
     private val timeOnlyFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
 
     fun formatSessionDate(timestampMs: Long): String {
-        return sessionDateFormat.format(Date(timestampMs))
+        val loc = if (Lang.isEnglish) Locale.ENGLISH else Locale("es")
+        return SimpleDateFormat("dd MMM, hh:mm a", loc).format(Date(timestampMs))
     }
 
     fun formatTimeOnly(timestampMs: Long): String {

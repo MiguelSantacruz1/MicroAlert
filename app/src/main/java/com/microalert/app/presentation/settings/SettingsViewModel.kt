@@ -1,9 +1,11 @@
 package com.microalert.app.presentation.settings
 
 import androidx.lifecycle.ViewModel
+import com.microalert.app.presentation.theme.Lang
 import androidx.lifecycle.viewModelScope
 import com.microalert.app.domain.alerts.AlertManager
 import com.microalert.app.domain.usecase.ClearHistoryUseCase
+import com.microalert.app.presentation.theme.Neon
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,17 +21,33 @@ class SettingsViewModel(
     private val _uiState = MutableStateFlow(
         SettingsUiState(
             isVibrationEnabled = store?.isVibrationEnabled() ?: true,
-            vibrationCooldownSeconds = store?.cooldownSeconds() ?: 30
+            vibrationCooldownSeconds = store?.cooldownSeconds() ?: 30,
+            isDarkTheme = store?.isDarkTheme() ?: true
         )
     )
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
 
     init {
+        Neon.isDark = _uiState.value.isDarkTheme
+        Lang.isEnglish = store?.isEnglish() ?: false
         applyToAlerts(_uiState.value)
     }
 
     fun toggleVibration() {
         change { it.copy(isVibrationEnabled = !it.isVibrationEnabled) }
+    }
+
+    fun toggleTheme() {
+        val dark = !_uiState.value.isDarkTheme
+        Neon.isDark = dark
+        store?.saveDarkTheme(dark)
+        _uiState.update { it.copy(isDarkTheme = dark) }
+    }
+
+    fun toggleLanguage() {
+        val en = !Lang.isEnglish
+        Lang.isEnglish = en
+        store?.saveEnglish(en)
     }
 
     fun cycleCooldown() {
