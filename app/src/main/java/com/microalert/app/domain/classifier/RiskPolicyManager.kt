@@ -8,6 +8,13 @@ import com.microalert.app.domain.model.WindowDataQuality
 class RiskPolicyManager(
     val config: RiskClassificationConfig = RiskClassificationConfig()
 ) {
+    /** Desplazamiento de umbrales por calibración personal (0 = umbrales de fábrica). */
+    var thresholdOffset: Float = 0f
+
+    private val precautionThr: Float get() = config.precautionThreshold + thresholdOffset
+    private val highThr: Float get() = config.highThreshold + thresholdOffset
+    private val criticalThr: Float get() = config.criticalThreshold + thresholdOffset
+
     private var currentEffectiveLevel: RiskLevel = RiskLevel.NORMAL
     private var consecutiveElevatedCount: Int = 0
 
@@ -58,9 +65,9 @@ class RiskPolicyManager(
 
     private fun determineRawLevel(p: Float): RiskLevel {
         return when {
-            p >= config.criticalThreshold -> RiskLevel.CRITICAL
-            p >= config.highThreshold -> RiskLevel.HIGH
-            p >= config.precautionThreshold -> RiskLevel.PRECAUTION
+            p >= criticalThr -> RiskLevel.CRITICAL
+            p >= highThr -> RiskLevel.HIGH
+            p >= precautionThr -> RiskLevel.PRECAUTION
             else -> RiskLevel.NORMAL
         }
     }
@@ -73,21 +80,21 @@ class RiskPolicyManager(
 
         return when (currentEffectiveLevel) {
             RiskLevel.CRITICAL -> {
-                if (probability < (config.criticalThreshold - config.hysteresisDelta)) {
+                if (probability < (criticalThr - config.hysteresisDelta)) {
                     proposedLevel
                 } else {
                     RiskLevel.CRITICAL
                 }
             }
             RiskLevel.HIGH -> {
-                if (probability < (config.highThreshold - config.hysteresisDelta)) {
+                if (probability < (highThr - config.hysteresisDelta)) {
                     proposedLevel
                 } else {
                     RiskLevel.HIGH
                 }
             }
             RiskLevel.PRECAUTION -> {
-                if (probability < (config.precautionThreshold - config.hysteresisDelta)) {
+                if (probability < (precautionThr - config.hysteresisDelta)) {
                     proposedLevel
                 } else {
                     RiskLevel.PRECAUTION
@@ -98,6 +105,7 @@ class RiskPolicyManager(
     }
 
     fun reset() {
+        thresholdOffset = 0f
         currentEffectiveLevel = RiskLevel.NORMAL
         consecutiveElevatedCount = 0
     }

@@ -12,6 +12,8 @@ import com.microalert.app.domain.usecase.EvaluateRiskUseCase
 import com.microalert.app.domain.usecase.ExtractFeatureVectorUseCase
 import com.microalert.app.domain.usecase.ManageAlertsUseCase
 import com.microalert.app.domain.usecase.SaveSessionUseCase
+import com.microalert.app.domain.classifier.PersonalCalibrator
+import com.microalert.app.ml.predictor.RiskForecaster
 import com.microalert.app.sensors.DemoLevel
 import com.microalert.app.sensors.DemoScenario
 import com.microalert.app.signalprocessing.ReactionTestManager
@@ -36,7 +38,9 @@ class MonitoringViewModel(
     private val manageAlertsUseCase: ManageAlertsUseCase? = null,
     private val saveSessionUseCase: SaveSessionUseCase? = null,
     private val sessionHistoryRepository: SessionHistoryRepository? = null,
-    private val reactionTestManager: ReactionTestManager? = null
+    private val reactionTestManager: ReactionTestManager? = null,
+    private val riskForecaster: RiskForecaster? = null,
+    private val calibrator: PersonalCalibrator = PersonalCalibrator()
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MonitoringUiState())
@@ -67,6 +71,8 @@ class MonitoringViewModel(
         countHeartRateSamples = 0
         evaluateRiskUseCase?.reset()
         manageAlertsUseCase?.reset()
+        riskForecaster?.reset()
+        calibrator.reset()
         signalProcessingPipeline?.restoreDefaults()
         if (mode == AppMode.DEMO) {
             signalProcessingPipeline?.configure(DemoScenario.WINDOW_MS, DemoScenario.STEP_MS)
@@ -98,6 +104,9 @@ class MonitoringViewModel(
                 sessionDurationSeconds = 0L,
                 windowCountProcessed = 0,
                 demoLevel = DemoLevel.AUTO,
+                calibrationProgress = 0f,
+                baselineHeartRate = null,
+                thresholdOffset = 0f,
                 currentRiskLevel = RiskLevel.NORMAL
             )
         }
@@ -172,8 +181,22 @@ class MonitoringViewModel(
                             maxRiskObserved = riskResult.effectiveRiskLevel
                         }
 
+                        if (!calibrator.isCalibrated) {
+                            calibrator.observe(riskResult.drowsinessProbability, featureVector.heartRate)
+                            if (calibrator.isCalibrated) {
+                                evaluateRiskUseCase.setThresholdOffset(calibrator.thresholdOffset)
+                            }
+                        }
+
+                        val forecast = riskForecaster?.update(riskResult.drowsinessProbability)
+                            ?.takeIf { riskResult.effectiveRiskLevel.ordinal < RiskLevel.HIGH.ordinal }
+
                         _uiState.update { current ->
                             current.copy(
+                                calibrationProgress = if (calibrator.isCalibrated) null else calibrator.progress,
+                                baselineHeartRate = calibrator.baselineHeartRate,
+                                thresholdOffset = calibrator.thresholdOffset,
+                                forecastProbability = forecast,
                                 currentRiskLevel = riskResult.effectiveRiskLevel,
                                 inactivityDurationSeconds = windowData.inactivitySeconds,
                                 hrvAvailable = windowData.isHrvAvailable,
@@ -214,7 +237,8 @@ class MonitoringViewModel(
             signalProcessingPipeline?.reset()
             evaluateRiskUseCase?.reset()
             manageAlertsUseCase?.reset()
-            _uiState.update { it.copy(demoLevel = level, currentRiskLevel = RiskLevel.NORMAL) }
+            riskForecaster?.reset()
+            _uiState.update { it.copy(demoLevel = level, currentRiskLevel = RiskLevel.NORMAL, forecastProbability = null) }
         } else {
             _uiState.update { it.copy(demoLevel = level) }
         }

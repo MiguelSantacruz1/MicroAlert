@@ -26,6 +26,7 @@ import com.microalert.app.ml.loader.ModelLoader
 import com.microalert.app.presentation.alert.AlertViewModel
 import com.microalert.app.presentation.history.SessionHistoryViewModel
 import com.microalert.app.presentation.home.HomeViewModel
+import com.microalert.app.ml.predictor.RiskForecaster
 import com.microalert.app.presentation.monitoring.MonitoringViewModel
 import com.microalert.app.presentation.reaction.ReactionTestViewModel
 import com.microalert.app.presentation.sensorstatus.SensorStatusViewModel
@@ -55,6 +56,10 @@ class AppContainer(private val context: Context) {
 
     val sensorRepository: SensorRepository by lazy {
         SensorRepositoryImpl(context)
+    }
+
+    val riskForecaster: RiskForecaster by lazy {
+        RiskForecaster.fromAssets(context)
     }
 
     val permissionManager: PermissionManager by lazy {
@@ -145,7 +150,8 @@ class AppContainer(private val context: Context) {
                         manageAlertsUseCase = manageAlertsUseCase,
                         saveSessionUseCase = saveSessionUseCase,
                         sessionHistoryRepository = sessionHistoryRepository,
-                        reactionTestManager = reactionTestManager
+                        reactionTestManager = reactionTestManager,
+                        riskForecaster = riskForecaster
                     ) as T
                 }
                 modelClass.isAssignableFrom(AlertViewModel::class.java) -> {

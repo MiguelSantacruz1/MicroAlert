@@ -18,6 +18,10 @@ class EvaluateRiskUseCase(
         return riskPolicyManager.evaluateProbability(probability, dataQuality, timestampMs)
     }
 
+    fun setThresholdOffset(offset: Float) {
+        riskPolicyManager.thresholdOffset = offset
+    }
+
     fun reset() {
         riskPolicyManager.reset()
     }

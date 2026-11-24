@@ -17,5 +17,9 @@ data class MonitoringUiState(
     val hrvSdnnMs: Float? = null,
     val hrvRmssdMs: Float? = null,
     val windowCountProcessed: Int = 0,
+    val calibrationProgress: Float? = null,
+    val baselineHeartRate: Float? = null,
+    val thresholdOffset: Float = 0f,
+    val forecastProbability: Float? = null,
     val demoLevel: com.microalert.app.sensors.DemoLevel = com.microalert.app.sensors.DemoLevel.AUTO
 )

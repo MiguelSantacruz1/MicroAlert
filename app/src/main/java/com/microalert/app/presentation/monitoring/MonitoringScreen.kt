@@ -107,6 +107,12 @@ fun MonitoringScreen(
                 }
             }
 
+            item { CalibrationTag(uiState) }
+
+            uiState.forecastProbability?.let { p ->
+                item { ForecastTag(p) }
+            }
+
             if (isDemo) {
                 item {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -186,6 +192,49 @@ private fun LiveTag(isDemo: Boolean) {
             fontSize = 10.sp,
             fontWeight = FontWeight.Bold,
             letterSpacing = 2.sp
+        )
+    }
+}
+
+@Composable
+private fun CalibrationTag(uiState: MonitoringUiState) {
+    val progress = uiState.calibrationProgress
+    val color = if (progress != null) Neon.Violet else Neon.Lime
+    val text = if (progress != null) {
+        val pct = (progress * 100).toInt()
+        tr("Calibrando a ti... $pct%", "Calibrating to you... $pct%")
+    } else {
+        val bpm = uiState.baselineHeartRate?.toInt()
+        val base = if (bpm != null) tr("pulso base $bpm bpm", "baseline $bpm bpm") else tr("calibrado", "calibrated")
+        val adj = (uiState.thresholdOffset * 100).toInt()
+        tr("Calibrado a ti · $base · umbral +$adj%", "Calibrated to you · $base · threshold +$adj%")
+    }
+    Text(
+        text = text,
+        color = color,
+        fontSize = 9.sp,
+        textAlign = TextAlign.Center,
+        modifier = Modifier.fillMaxWidth(0.85f)
+    )
+}
+
+@Composable
+private fun ForecastTag(probability: Float) {
+    val pct = (probability * 100).toInt()
+    val warn = probability >= 0.5f
+    val color = if (probability >= 0.75f) Neon.Red else if (warn) Neon.Amber else Neon.Cyan
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text("IA", color = color, fontSize = 9.sp, letterSpacing = 3.sp, fontWeight = FontWeight.Bold)
+        Text(
+            text = if (warn) {
+                tr("$pct% de llegar a riesgo ALTO pronto", "$pct% chance of HIGH risk soon")
+            } else {
+                tr("Tendencia estable ($pct%)", "Stable trend ($pct%)")
+            },
+            color = color,
+            fontSize = 10.sp,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth(0.85f)
         )
     }
 }
